@@ -1,6 +1,6 @@
 package science.snelgrove.showdown
 
-import akka.actor.{ ActorRef, ActorSystem, Cancellable }
+import akka.actor.{ Actor, ActorRef, ActorSystem, Cancellable }
 import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
@@ -14,9 +14,9 @@ import com.googlecode.lanterna.input.{ KeyStroke, KeyType }
 import com.googlecode.lanterna.terminal.ansi.{ UnixLikeTerminal, UnixTerminal }
 import com.googlecode.lanterna.terminal.{ Terminal }
 import java.nio.charset.Charset
+import play.api.libs.json.{ JsValue, Json }
 import scala.concurrent.{Await, Future, Promise}
 import scala.concurrent.duration._
-
 
 case class KeyCharacter(key: Either[Char, KeyType], ctrl: Boolean, alt: Boolean, shift: Boolean)
 
@@ -39,44 +39,45 @@ object Client extends App {
   //term.getTerminal.enterPrivateMode()
   term.clearScreen()
 
-  val url = "ws://echo.websocket.org"
-  // val url = "wss://sim2.psim.us/showdown/809/yp5rljjy/websocket"
+  // val url = "ws://echo.websocket.org"
+  val url = "wss://sim2.psim.us/showdown/809/yp5rljjy/websocket"
 
-  // printppp each incoming strict text message
+  // print each incoming strict text message
   val incoming: Sink[Message, Future[Done]] =
     Sink.foreach {
       case message: TextMessage.Strict =>
         log.info(message.text)
         for ( c <- message.text) term.putCharacter(c)
+        term.putCharacter('\n')
         term.flush()
+      case c => log.warning(s"Unknown message $c")
     }
 
-  val prelude: Source[Message, NotUsed] =
-    Source(
-      List("|/cmd rooms", "|/autojoin help", "|/join lobby")
-        .map(_ + "\n").map(TextMessage.apply(_)))
+  val prelude: Source[String, NotUsed] =
+    Source(List("|/help", "|/cmd rooms", "|/autojoin help", "|/join lobby"))
 
-  val keyboard: Source[Message, Cancellable] =
+  val keyboard: Source[String, Cancellable] =
     Source.tick(0.seconds, 100.milliseconds, 'poll)
       .flatMapConcat(_ =>
         Source.unfold('poll)(_ => Option(term.pollInput()).map('poll -> _)))
       .map(keystrokeConvert(_))
-      .log("keyboard")
+      .log("keystrokes")
       .splitAfter { k: KeyCharacter =>
         k match {
           case KeyCharacter(Right(KeyType.Enter), _, _, _) => true
           case _ => false
         }
-      }.collect {
+      }
+      .collect {
         case KeyCharacter(Left(c), _, _, _) => c
-      }.fold("") {(c, n) =>  c + n}
-      .map(m => TextMessage(m + "\n"): Message)
+      }
+      .fold("") {(c, n) =>  c + n}
       .concatSubstreams
-      .log("keyboard")
 
-  val outgoing: Source[Message, NotUsed] = prelude.concat(keyboard)
+  val outgoing: Source[Message, Cancellable] = keyboard
+    .map(m => TextMessage(s"""["$m"]\n"""): Message)
+    .log("outgoing")
 
-  // keyboard.runWith(Sink.foreach(p => log.info(p.toString())))
   val flow: Flow[Message, Message, Future[Done]] =
     Flow.fromSinkAndSourceMat(incoming, outgoing)(Keep.left)
 
@@ -91,9 +92,13 @@ object Client extends App {
     }
   }
 
-  // in a real application you would not side effect here
+
+  // In a real application you would not side effect here
   // and handle errors more carefully
   connected.onComplete(f => log.info(f.toString()))
-  closed.foreach( _ => log.info("closed"))
+  closed.foreach( _ => {
+    log.info("closed")
+    system.terminate()
+  })
   //Await.result(system.whenTerminated, Duration.Inf)
 }

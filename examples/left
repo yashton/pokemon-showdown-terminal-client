@@ -1,0 +1,306 @@
+>> |/cmd rooms
+>> |/autojoin
+<< |updateuser|Guest 11856217|0|265
+|formats|,1|US/UM Singles|[Gen 7] Random Battle,f|[Gen 7] Unrated Random Battle,b|[Gen 7] OU,e|[Gen 7] Ubers,e|[Gen 7] UU,c|[Gen 7] UU (suspect test),a|[Gen 7] RU,e|[Gen 7] NU,e|[Gen 7] PU,e|[Gen 7] LC,e|[Gen 7] Monotype,e|[Gen 7] Anything Goes,e|[Gen 7] CAP,e|[Gen 7] CAP LC,c|[Gen 7] Battle Spot Singles,1e|[Gen 7] Ultra No Holds Barred,e|[Gen 7] Custom Game,c|,1|US/UM Doubles|[Gen 7] Random Doubles Battle,f|[Gen 7] Doubles OU,e|[Gen 7] Doubles Ubers,e|[Gen 7] Doubles UU,e|[Gen 7] VGC 2018,1e|[Gen 7] VGC 2017,1c|[Gen 7] Battle Spot Doubles,1e|[Gen 7] Battle Spot Special 10,1e|[Gen 7] Metronome Battle,e|[Gen 7] Doubles Custom Game,c|,2|OM of the Month|[Gen 7] Suicide Cup,e|[Gen 7] Scalemons,e|,2|Other Metagames|[Gen 7] Balanced Hackmons,e|[Gen 7] 1v1,e|[Gen 7] Mix and Mega,e|[Gen 7] Almost Any Ability,e|[Gen 7] Camomons,c|[Gen 7] STABmons,e|[Gen 7] 2v2 Doubles,c|[Gen 6] Gen-NEXT OU,c|,2|Randomized Metas|[Gen 7] Battle Factory,f|[Gen 7] BSS Factory,f|[Gen 7] Monotype Random Battle,d|[Gen 7] Challenge Cup 1v1,f|[Gen 7] Challenge Cup 2v2,d|[Gen 7] Hackmons Cup,f|[Gen 7] Doubles Hackmons Cup,d|[Gen 6] Random Battle,f|[Gen 6] Battle Factory,d|[Gen 5] Random Battle,f|[Gen 4] Random Battle,f|[Gen 3] Random Battle,f|[Gen 2] Random Battle,f|[Gen 1] Random Battle,f|[Gen 1] Challenge Cup,9|,3|RoA Spotlight|[Gen 4] OU (Team Preview),e|[Gen 1] Ubers,e|[Gen 6] NU,e|,3|Past Gens OU|[Gen 6] OU,e|[Gen 5] OU,e|[Gen 4] OU,e|[Gen 3] OU,e|[Gen 2] OU,e|[Gen 1] OU,e|,3|OR/AS Singles|[Gen 6] Ubers,c|[Gen 6] UU,c|[Gen 6] RU,c|[Gen 6] PU,c|[Gen 6] LC,c|[Gen 6] Monotype,c|[Gen 6] Anything Goes,c|[Gen 6] CAP,c|[Gen 6] Battle Spot Singles,1c|[Gen 6] Custom Game,c|,3|OR/AS Doubles/Triples|[Gen 6] Doubles OU,c|[Gen 6] VGC 2016,1c|[Gen 6] Battle Spot Doubles,1c|[Gen 6] Doubles Custom Game,c|[Gen 6] Battle Spot Triples,1c|[Gen 6] Triples Custom Game,c|,4|B2/W2 Singles|[Gen 5] Ubers,c|[Gen 5] UU,c|[Gen 5] RU,c|[Gen 5] NU,c|[Gen 5] LC,c|[Gen 5] GBU Singles,1c|[Gen 5] Custom Game,c|,4|B2/W2 Doubles|[Gen 5] Doubles OU,c|[Gen 5] GBU Doubles,1c|[Gen 5] Doubles Custom Game,c|,4|DPP Singles|[Gen 4] Ubers,c|[Gen 4] UU,c|[Gen 4] NU,c|[Gen 4] LC,c|[Gen 4] Custom Game,c|,4|DPP Doubles|[Gen 4] Doubles OU,c|[Gen 4] Doubles Custom Game,c|,4|Past Generations|[Gen 3] Ubers,c|[Gen 3] UU,c|[Gen 3] Custom Game,c|[Gen 3] Doubles Custom Game,c|[Gen 2] Ubers,c|[Gen 2] UU,c|[Gen 2] Custom Game,c|[Gen 1] OU (tradeback),c|[Gen 1] Stadium,c|[Gen 1] Custom Game,c
+<< |queryresponse|rooms|null
+<< |challstr|4|80ee5689bb3dc04f33d030de0685a4e82b99e9c64e065ddfc7d9e082543758129807512c067758b9f473a2579ea97d2d51115382240750847f3281c5733b95f5ff88fe2464259a22f7c041e85625814de7d690d3c2b9ffe244123375a4f5782b88c0b722d08e8a6e41785c7b979618c749eb18917d2fa2a9bc477f149633da6e
+<< |queryresponse|rooms|{"official":[{"title":"Lobby","desc":"Still haven't decided on a room for you? Relax here amidst the chaos.","userCount":822},{"title":"Help","desc":"Have a question about PS/Smogon? Ask for help from our friendly staff!","userCount":247,"subRooms":[]},{"title":"Tournaments","desc":"Scripted tours and user-created formats here, 24/7!","userCount":526,"subRooms":["Tours Plaza"]}],"pspl":[],"chat":[{"title":"Scholastic","desc":"A forum for the discussion of University topics as well as current affairs.","userCount":37},{"title":"Smash Bros","desc":"64, Melee, Brawl, PM, and Smash 4! Choose your game, and prepare to duke it out!","userCount":76},{"title":"Anything Goes","desc":"The Ubers of Ubers","userCount":85},{"title":"Art","desc":"Consult, converse, and collaborate with artists of all skill levels.","userCount":43},{"title":"Battle Dome","desc":"A text-based RPG, with weapons, classes, and magic galore!","userCount":30},{"title":"Battle Spot","desc":"Sun & Moon's official in-game ranked ladder metagames and competitions.","userCount":30},{"title":"CAP Project","desc":"Game Freak could learn a thing or two from us.","userCount":39},{"title":"中文 Chinese","desc":"欢迎来自世界各地的中文玩家","userCount":17},{"title":"Competitive Tutoring","desc":"Quick teambuilding and battling advice for all tiers","userCount":65},{"title":"Cosmopolitan","desc":"Explore the cultures, destinations, fashion, and wildlife of the world.","userCount":39},{"title":"Deutsche","desc":"Der Raum der deutschen Community auf PS!","userCount":41,"subRooms":[]},{"title":"Français","desc":"Bienvenue dans la salle française","userCount":199,"subRooms":["Arcade"]},{"title":"Game Corner","desc":"Play games and bet responsibly. No coin case needed.","userCount":63,"subRooms":["Game Workshop"]},{"title":"Health & Fitness","desc":"Share advice, seek help or look for motivation from others.","userCount":19},{"title":"Italiano","desc":"Benvenuti nella room italiana di PS!","userCount":44},{"title":"日本語 Japanese","desc":"日本語で会話したい方はこちらへ！","userCount":26},{"title":"Little Cup","desc":"As dangerous as cute! Try out our tier comprised of baby Pokémon species!","userCount":85},{"title":"Mafia","desc":"A chat game about deception, intrigue, and strategy. Can you survive the night?","userCount":46},{"title":"MOBA","desc":"Come talk about bad teammates in your MOBA games and Overwatch here!","userCount":43,"subRooms":[]},{"title":"Monotype","desc":"Who needs trophies when you can be a gym leader?","userCount":311,"subRooms":[]},{"title":"Nederlands","desc":"De room voor alle Nederlandstaligen.","userCount":23},{"title":"NeverUsed","desc":"Never Used but always loved!","userCount":127},{"title":"Other Metas","desc":"Play something different. Play Other Metagames made by the community.","userCount":172,"subRooms":[]},{"title":"OverUsed","desc":"Smogon's most popular tier and central metagame!","userCount":642,"subRooms":[]},{"title":"Português","desc":"Bem-vindos à sala para todos os falantes de português!","userCount":122,"subRooms":["BattleFrontier"]},{"title":"Pro Wrestling","desc":"WWE, Ring of Honor, New Japan and more!","userCount":36},{"title":"PU","desc":"Our tier name doesn't mean anything. Not even if they say so on Youtube","userCount":138},{"title":"RarelyUsed","desc":"You won't believe how rarelyused these Pokemon are!","userCount":109},{"title":"Rate My Team","desc":"Everybody is free to rate or ask for advice!","userCount":89},{"title":"Roleplaying","desc":"Join a world where your imagination is the only limit!","userCount":113,"subRooms":["RustyRP","AmphyRP"]},{"title":"Ruins of Alph","desc":"Competitive discussion for Generations 1-6. Come wallow in nostalgia with us!","userCount":126},{"title":"Scavengers","desc":"Participate in fun scavenger hunts or create some of your own!","userCount":40},{"title":"Smogon Doubles","desc":"Double the Pokémon, double the fun!","userCount":52},{"title":"Sports","desc":"Yes, but can he do it on a cold rainy night in Stoke?","userCount":51},{"title":"Survivor","desc":"Try to be the last person alive! Who can you trust?","userCount":33},{"title":"TCG & Tabletop","desc":"Board Games, War Games, Card Games! If it fits on a table it fits in the room!","userCount":31,"subRooms":["Tavern Brawl","Scrabble"]},{"title":"Tech & Code","desc":"printf(\"Hello, World!\\n\"); We aren't technical support.","userCount":37},{"title":"The Happy Place","desc":"Come on in and hang out a while! We’re here to listen if you want to talk!","userCount":128},{"title":"The Studio","desc":"Share, discuss, and listen to music with us!","userCount":62},{"title":"Trivia","desc":"Learn something new every day!","userCount":52,"subRooms":["Question Workshop"]},{"title":"TV & Books & Films","desc":"Literary critic? Entertainment enthusiast? This one's for you.","userCount":34},{"title":"Ubers","desc":"The most inclusive of Smogon's tiers, allowing the use of any Pokémon species!","userCount":162},{"title":"UnderUsed","desc":"Underused but not underplayed!","userCount":225},{"title":"VGC","desc":"The room for the official competitive format!","userCount":204},{"title":"Video Games","desc":"RPGs, Shooters, Consoles and Computers. There's more than just Pokémon.","userCount":153,"subRooms":["Splatoon"]},{"title":"YouTube","desc":"Broadcast Yourself! BETA","userCount":42},{"title":"Wi‐Fi","desc":"Trading, Battling, Breeding, and Giveaways - All on your 3DS!","userCount":203},{"title":"1v1","desc":"The one and only metagame","userCount":81},{"title":"Español","desc":"Bienvenido a la sala para hispanohablantes","userCount":328,"subRooms":["Eventos"]},{"title":"Pokémon Go","desc":"The game that finally got everyone to GO outside","userCount":32},{"title":"Anime and Manga","desc":"Watch Chinese Cartoons and Read Moon Glyphs with us here.","userCount":103},{"title":"Random Battles","desc":"No team? No problem! Join us for discussion and play of all randomized formats!","userCount":255},{"title":"Hindi","desc":"हिंदी चैटरूम में आपका स्वागत है! Hindi chatroom mein aapka swagat hai!","userCount":19},{"title":"The Cafe","desc":"Pokémon Showdown's Food Room! #PutAnEggOnIt","userCount":40},{"title":"Pokemon Games","desc":"Your central hub for discussion about all Pokemon games, including the latest!","userCount":117},{"title":"The Library","desc":"From academia to fantasy, this is the room for reading, writing, and research.","userCount":66}],"userCount":14913,"battleCount":1938}
+>> |/trn yashton,0,80ee5689bb3dc04f33d030de0685a4e82b99e9c64e065ddfc7d9e082543758129807512c067758b9f473a2579ea97d2d51115382240750847f3281c5733b95f5ff88fe2464259a22f7c041e85625814de7d690d3c2b9ffe244123375a4f5782b88c0b722d08e8a6e41785c7b979618c749eb18917d2fa2a9bc477f149633da6e,yashton,4,1528928612,sim2.psim.us,07bc56c80cd2e861d1583e711528915380,ddfcacc41d46c446,be2591bc0f180e75;4f7a36932f4b96e2c3f6a2c6db71648021df65116f53bc09053c1ac492e011d7439354d5b4c7c5e05473a42a25f0b06fda3d2ec53c24d695e2f54fa27d0136d8274a1c6de9140ed019d650c4819e4782da3f589c6a6c7ee39ff7089831f953a9c5efcdf82ec45b214c59cbedfbf33d2fdd5e62bf2c1dced36882b00a5e3d3a7aa224106eaa0a601e81b2f7eb9bf1843c0f150ce9fa4eb4bee1f29aca7233c3f9249c9bbdbc27551e9164f735040d3745a71fb83ba0410769c374252ab3058a920187ac2612b5b339899833a36b0558334fe170165b27ee8e93b94772b3e987af27bb72d466cc04d68d2c314242aa6e1be41c3fbcdd21cf71478b7cf6aa8a56dcb3e0b6e79fdb4a1ef3dca1e4f65962ed668750d26328d7f4bbae7242989793afa757f5e7c0f671c25c88e5326682245f5c170fe3fe692e080197fb5cca04fb8455c1e0345832932220f5976465f7fb0244df77d264ea49c6af84640aa827c03696ccdd897e89e5f3de2dbaa4a9db810c457e9ae9ae32b8dd07b8be9b34cd110a95a661b640637e271d08fd16b88ea62d3e970583ed938c72775ad1c81ea7eb903646516ebad040b395b8f151ec64c2be5383223394ce7994c8f20d81fe73a5e74ecafbf316411ad7e4f1e659f8c461bf4346facfa0ab32b717eecf2ccb62e37187116523dbec0ef32a578f8dc9f9bb0d118535ebd7749747afcc658a94cd740d
+<< |updatesearch|{"searching":[],"games":null}
+<< |updateuser|yashton|1|170
+<< |updatesearch|{"searching":[],"games":null}
+<< |updatechallenges|{"challengesFrom":{},"challengeTo":null}
+>> |/join tcgtabletop
+<< >tcgtabletop
+|init|chat
+|title|TCG & Tabletop
+|users|30, platinumCheesecake, sunnydayblood, Gracuul, Cairill, Shrekt'D,+Kilan, Kantsu (かんつ),+Haynesarr★, Darthesis, Happy Accelgor, Princess Luna, PT Xeno, Pussys are wet,+Silver ☭ Scrapes, Let's go shuckles, Highlord, I suc hard, uqb, c9lifeorb, ILostToAKiD^v^,@Yuki, technosis, Liam Buttz!!! ∞,+A Quag To The Past,+BigPimpin12, JT McCoy,*Kid A,@Hippopotas ‿,%Mega Eevee X, yashton
+|:|1528928014
+|c:|1528852953|%Segmr|Karakter i just found out something silly about droll vs the sky striker field
+|c:|1528852965|%Segmr|if you use it under droll you still excavate and send the card you chose
+|c:|1528852972|%Segmr|that's a really weird buff to have wtf
+|c:|1528853123| technosis|you thought some silly boy and his derpbirb could stop the mighty mecha waifus
+|c:|1528853126| technosis|boi
+|c:|1528853187|@intellectualdude|Bird*
+|c:|1528853203| technosis|Birb**
+|c:|1528853215|@intellectualdude|It's definitely bird.
+|c:|1528853238| technosis|language is dynamic, so I dynamic'd it to birb
+|c:|1528853256| Karakter|*Birb
+|c:|1528853267|@intellectualdude|If it's dynamic, I can probably 'dynamic' YGO player to dimwit sometimes. Too soon?
+|c:|1528853279| Karakter|No, that's completely accurate
+|c:|1528853279| technosis|too late tbh
+|c:|1528853286| PokemonFanYellow|Is this a dead room?
+|c:|1528853290| Karakter|Did you hear about the italian player that cheated in Nationals?
+|c:|1528853295| technosis|yes lol
+|c:|1528853300| Karakter|"Looks through graveyard"
+|c:|1528853303| Karakter|"Add card to hand"
+|c:|1528853308| Karakter|"Put graveyad down"
+|c:|1528853313| Karakter|"Resolve Divine Phoenix?"
+|c:|1528853314|#Berserking Now|really?
+|c:|1528853316|%Segmr|sorry is too late
+|c:|1528853327|@intellectualdude|Is too late.
+|c:|1528853332|@intellectualdude|You had response time. Is too late.
+|c:|1528853339| technosis|"I activate the effect of Grime from my deck"
+|c:|1528853344|@intellectualdude|Or when you Upstart and forget to draw.
+|c:|1528853358| Karakter|You had 2 sec, is too late
+|c:|1528853384|@intellectualdude|Jaaadge
+|c:|1528853412| Karakter|I actually stayed in a room with Paul Kite
+|c:|1528853426| Karakter|and then on the day of nationals, they had to move him out of our hotel
+|c:|1528853431| Karakter|and into judge accomodation
+|c:|1528853443| Karakter|Still knew the deck representation beforehand tho
+|c:|1528853469| technosis|>Judge Accomodation
+|c:|1528853473|@intellectualdude|And he told you 'is too late, you needed to respond 1 second after I booked hotel. Is too late.'
+|c:|1528853479| technosis|so motel 6 then
+|c:|1528853601| Karakter|Probably, he complained a lot afterwards but he never said where he stayed
+|c:|1528853620| Karakter|I know 2 judges. Le gasp!
+|c:|1528853625| Karakter|and they're both admins on DM
+|c:|1528853627| Karakter|*DN
+|c:|1528853633| Karakter|Oh, actually 3. Sik
+|c:|1528853711|#Berserking Now|I have had people accidentally try to create game state violation when they were playing against me.
+|c:|1528853749| Karakter|I mean, I purposely forced people to break gamestate sometimes
+|c:|1528853785|#Berserking Now|mostly it is since you can't change the order of a graveyard in legacy.
+|c:|1528853835| Karakter|Ah right, yeah
+|html|<div class="infobox"><p style="margin: 2px 0 5px 0"><span style="border:1px solid #777;color:#555;border-radius:4px;padding:0 3px"><i class="fa fa-bar-chart"></i> Poll ended</span> <strong style="font-size:11pt">&quot;favorite staple&quot;</strong></p><div style="margin-top: 3px">1. <strong>raigeki</strong> <small>(32 votes)</small><br /><span style="font-size:7pt;background:#79A;padding-right:81px"></span><small>&nbsp;27%</small></div><div style="margin-top: 3px">2. <strong>ash blossom</strong> <small>(17 votes)</small><br /><span style="font-size:7pt;background:#8A8;padding-right:42px"></span><small>&nbsp;14%</small></div><div style="margin-top: 3px">3. <strong>thoughtseize</strong> <small>(5 votes)</small><br /><span style="font-size:7pt;background:#88B;padding-right:12px"></span><small>&nbsp;4%</small></div><div style="margin-top: 3px">4. <strong>path to exile</strong> <small>(10 votes)</small><br /><span style="font-size:7pt;background:#79A;padding-right:24px"></span><small>&nbsp;8%</small></div><div style="margin-top: 3px">5. <strong>N</strong> <small>(31 votes)</small><br /><span style="font-size:7pt;background:#8A8;padding-right:78px"></span><small>&nbsp;26%</small></div><div style="margin-top: 3px">6. <strong>double colorless</strong> <small>(24 votes)</small><br /><span style="font-size:7pt;background:#88B;padding-right:60px"></span><small>&nbsp;20%</small></div></div>
+|c:|1528858568|@Hippopotas ‿|h
+|c:|1528858703|#Acid Hunter|e
+|c:|1528859342| uqb|t
+|c:|1528859654|@intellectualdude|wat da fuk is dat
+|c:|1528860111|#Acid Hunter|hm?
+|c:|1528860956| taugenicks|double colorless? you mean sol ring?
+|c:|1528861167|@Hippopotas ‿|/me dabs
+|c:|1528861225|@Hippopotas ‿|are there random messages I'm not seeing
+|c:|1528861230|@Hippopotas ‿|because this chat seems full of non sequiturs rn
+|c:|1528864012|#Acid Hunter|/me shrug
+|c:|1528866837|@Hippopotas ‿|Acid Hunter how can you do this to me
+|c:|1528866851|#Acid Hunter|//shadowban Hippopotas
+|c:|1528869204| Landkon2|I found the most absurdly broken card in yugioh ~~ofc, its anime, but its till op~~
+|c:|1528869265|@Hippopotas ‿|Acid Hunter peep my new list
+|c:|1528869267|@Hippopotas ‿|the 3rd iteration
+|c:|1528869268|@Hippopotas ‿|of it
+|c:|1528869284|@Hippopotas ‿|http://tappedout.net/mtg-decks/protect-hive-mind-until-eternal-dominion/
+|c:|1528869295|@Hippopotas ‿|why do I use derevi, idfk
+|c:|1528869305|@Hippopotas ‿|taking other bant commander recs
+|c:|1528869344|@Hippopotas ‿|angus mackenzie is too expensive so
+|c:|1528869402|@Hippopotas ‿|wait, kydele + something
+|c:|1528869495|@Hippopotas ‿|maybe I'll just go ishai + kydele
+|c:|1528871524| straight to 1800|hey guys
+|c:|1528871538| straight to 1800|not trying to trade or anything just a question
+|c:|1528871553| straight to 1800|i have saved up hundreds of those code cards you get with boosters
+|c:|1528871559| straight to 1800|are they worth anything?
+|c:|1528871702|@Temporaryanonymous|ptcg ones?
+|c:|1528871706|@Temporaryanonymous|I think some people will pay for them
+|c:|1528871764| straight to 1800|what does ptcg?
+|c:|1528871766| straight to 1800|mean
+|c:|1528871783|@intellectualdude|Pokemon Trading Card Game. Hence the abbreviation.
+|c:|1528871801| straight to 1800|oh yeah sorry just thought was called tcg
+|c:|1528871804| straight to 1800|yeah ptcg
+|c:|1528871822| straight to 1800|some of the codes are a year+ old will theey still work?
+|c:|1528875143|@Hippopotas ‿|unlikely
+|c:|1528878176| Karakter|TCG codes apparently don't expire, they just don't always return legal cards
+|c:|1528882595|@Quote|I guess that's for the sake of people that play old or expanded formats?
+|c:|1528882598|@Quote|beats me
+|c:|1528882646|@Quote|or maybe it's so people aren't getting ripped off (I guess some people buy the packs with the full intention of only using the codes)
+|c:|1528885708|%A|good ole hgss
+|c:|1528890712|@intellectualdude|HGSS was weirdest format though.
+|c:|1528893683|@intellectualdude|Also, A, I have two memevenly matched now.
+|c:|1528894254|%A|oh that's p good
+|c:|1528894934|@intellectualdude|Yeah. Debating selling them.
+|c:|1528895202|%A|id hold onto them for now
+|c:|1528897515|%A|laters
+|c:|1528900732|+how2osu|omegayikes reckful invested his whole life savings into reynads tcg
+|c:|1528915414| BLUTS $|A
+|c:|1528915419| BLUTS $|errr int dude
+|c:|1528915421| BLUTS $|well hes not here either
+|c:|1528921600| Andy30✯|yo can someone help me with something? with Pokemon TCG
+|c:|1528921943|%Mega Eevee X|Sure
+|c:|1528921970|+A Quag To The Past|ye what is it
+|c:|1528922065| Andy30✯|i messaged eevee thx quag
+|c:|1528922090|+A Quag To The Past|ok ok
+
+|raw|<div class="infobox infobox-roomintro"><div class="infobox-limited"><div class=broadcast-green><center><font size=2><strong>Welcome to TCG & Tabletop! Now go tap some special energies to cast Dark Magician or whatever the kids do these days.</strong></font><br><font size=4>TCG is a NO tolerance Spoiler Free chat!</font><table><tr><td><span><a href="https://www.youtube.com/watch?v=Nqe7jPX6DQY"><img src="https://i.stack.imgur.com/ihN3m.png" width=150 height=150></a></span></td><td><br><font size=3><a href="https://discord.gg/k5Y4KzY">Discord</a> <button style="padding: 0 ; border: none ; background: none" name="send" value="Dinosaur King is the best TCG">|</button> <a href=http://pastebin.com/uF7drzz0>Important links</a> <button style="padding: 0 ; border: none ; background: none" name="send" value="/j Roleplaying">|</button> <a href=http://pastebin.com/n7Vr6KF6>Rules</a> <button style="padding: 0 ; border: none ; background: none" name="send" value="Oh boy, Acid learned HTML">|</button> <a href=/tavernbrawl>Our Hearthstone Subroom</a> <button style="padding: 0 ; border: none ; background: none" name="send" value="Storm is an underappreciated archetype and doesn't deserve the hate it gets.">|</button> <a href=/scrabble>Our Scrabble Subroom</a> </font><br><br> <font size=2> <strong>See also: </strong><br> <a href=http://pastebin.com/mGnD78qr>Beginner's guide to PTCG (by Yuki)</a> <br><a href=https://docs.google.com/document/d/1xtJVcR0zTSXwfteVWeusLDGaX-Nmq0Glm14_QCUHSMM/edit?usp=sharing>MtG Deckbuilding Guide (by Berserking Now)</a> <br> <a href="https://docs.google.com/document/d/1B87M9Wgcg4vkV5rOFoHF8nPW9FaoX8HyOyLj3gPJjV8/edit?usp=sharing">Beginner's Guide to Shadowverse (by Ba'al Diamante)</a> </font> <br> <br> </td></tr></table></center></div></div><br /><div class="broadcast-red">Must be rank autoconfirmed or higher to talk right now.</div></div>
+>> |/leave tcgtabletop
+<< >tcgtabletop
+|deinit
+>> |/join pokemongo
+<< >pokemongo
+|uhtml|poll23|<div class="infobox"><p style="margin: 2px 0 5px 0"><span style="border:1px solid #6A6;color:#484;border-radius:4px;padding:0 3px"><i class="fa fa-bar-chart"></i> Poll</span> <strong style="font-size:11pt">Which of the *NEW* raid additions that came with the water event is your favourite?</strong></p><div style="margin-top: 5px"><button class="button" style="text-align: left" value="/poll vote 1" name="send" title="Vote for 1. T1: Shellder">1. <strong>T1: Shellder</strong></button></div><div style="margin-top: 5px"><button class="button" style="text-align: left" value="/poll vote 2" name="send" title="Vote for 2. T2: Marshtomp">2. <strong>T2: Marshtomp</strong></button></div><div style="margin-top: 5px"><button class="button" style="text-align: left" value="/poll vote 3" name="send" title="Vote for 3. T3: Sharpedo">3. <strong>T3: Sharpedo</strong></button></div><div style="margin-top: 7px; padding-left: 12px"><button value="/poll results" name="send" title="View results - you will not be able to vote after viewing results"><small>(View results)</small></button></div></div>
+<< >pokemongo
+|init|chat
+|title|Pokémon Go
+|users|35, jhjmhjvff,*Scrappie, Bcadren, Ice Kyubs,‽fgdfgdf, Tsar dragon, Beccy, Beebzz, Crimson✩✩Chin!, Ksonics0, kuronekoMia, holyganker, vveave, TheBaeBird, i love baton pass, EnemysKiller, Inq Miku, JB17, Future Industries, Javoon, Texlar, mgruenling,‽Guest 11836416,+Rei Keima,@kay, shitposter-chan, Chrispyburns (, AdminGalaxie, RoboJo, Kacjdadd,+Mega Eevee X, road blocks, Phil Anselmo, Der-Hydras, yashton
+|:|1528928023
+|c:|1528924205|+Mega Eevee X|Good IVs?
+|c:|1528924208| Sean9447|Nah
+|c:|1528924222|+Mega Eevee X|At least it's a Dex entry
+|c:|1528924231| Sean9447|That’s what really counts
+|c:|1528924421| Sean9447|Ye
+|c:|1528925012| TheJ3estPenguin|yes mex
+|c:|1528925018| TheJ3estPenguin|they use them in arlington
+|c:|1528925025|+Mega Eevee X|Huh
+|c:|1528925030| TheJ3estPenguin|raid bus
+|c:|1528925042|+Mega Eevee X|Yeah ok
+|c:|1528925045|+Mega Eevee X|Ik
+|c:|1528925737| Shotgun2010|these 2k eggs are really shit
+|c:|1528925750| Shotgun2010|I was hoping for more larva but no
+|c:|1528925766| Shotgun2010|just squirtle and totodile
+|c:|1528925897| Shotgun2010|i’m on 360 larv candy and 200 rares, If I pinap half my CDay captures i should have enough to evolve 6 and boost some levels. Hopefully we get weather boost
+|c:|1528926028|+Mega Eevee X|I'm pinapping all my cday catches
+|c:|1528926278| Maxalexanderpi∞|as you should
+|c:|1528926313| Shotgun2010|I wouldn’t pinap one I knew was 91+ or shiny or lv35 it’s too risky
+|c:|1528926339| Shotgun2010|that leaves about 80-90% to be pinapped
+|c:|1528926479|+Mega Eevee X|Oh
+|c:|1528926493|+Mega Eevee X|I'm pinapping all my non shiny comm day catches*
+|c:|1528926522| Shotgun2010|I will be sure to snag as many as possible
+|c:|1528926545| Shotgun2010|the most important community day since dratini
+|c:|1528926565|@anubis|I'm gonna go out and hope I get in on some raids.
+|c:|1528926568|+Mega Eevee X|I'd argue the most important Community day ever
+|c:|1528926569|@anubis|Before the sun goes down.
+|c:|1528926578|@anubis|Let me go find someone to babysit the room.
+|c:|1528926590|+Mega Eevee X|Alright, gl with raiding Anubis
+|c:|1528926598| Shotgun2010|they’ll make a decent rayquaza counter won’t they
+|c:|1528926619|+Mega Eevee X|TTar will be the best rock attacker in the game
+|c:|1528926645|+Mega Eevee X|Until either Rhyperior or Terrakion depending on movesets
+|c:|1528926664| DeltaRenegade|So Smack Down would be its best move?
+|c:|1528926674| Maxalexanderpi∞|>babysit
+|c:|1528926676| Maxalexanderpi∞|us?
+|c:|1528926678| Maxalexanderpi∞|;-;
+|c:|1528926687| Maxalexanderpi∞|w-w-we're responsible
+|c:|1528926690| jh3828 (seal) ✓|lmfao
+|c:|1528926696|+Mega Eevee X|It's best rock move delta
+|c:|1528926718|+Mega Eevee X|It will be the best attacker of two types after this community day
+|c:|1528926725| DeltaRenegade|Two types?
+|c:|1528926729|@kay|hello people of Go
+|c:|1528926729| Shotgun2010|yeah SD ttar will be the best rayquaza counter
+|c:|1528926731| DeltaRenegade|Rock and Dark?
+|c:|1528926735|+Mega Eevee X|Yeah
+|c:|1528926737| jh3828 (seal) ✓|hello
+|c:|1528926745| DeltaRenegade|Also oh shit congrats on Voice over here Mes
+|c:|1528926747| DeltaRenegade|Mex*
+|c:|1528926770|+Mega Eevee X|It's the top dark type attacker with Bite/Crunch and will be the best rock type attacker with Smack Down and I think stone edge?
+|c:|1528926772|+Mega Eevee X|And Ty
+|c:|1528926779| Shotgun2010|also apparently frost breath ice beam mew is second best counter to ray?
+|c:|1528926786| Shotgun2010|is that a mistake or
+|c:|1528926792| DeltaRenegade|Oh
+|c:|1528926796|+Mega Eevee X|It's the second best ice attacker
+|c:|1528926797| DeltaRenegade|Smack Down is a fast move?
+|c:|1528926800|+Mega Eevee X|Yeah
+|c:|1528926806| DeltaRenegade|Oh shit
+|c:|1528926810| Shotgun2010|is arti the best?
+|c:|1528926817|+Mega Eevee X|Mew is the current second best ice attacker after articuno
+|c:|1528926818| DeltaRenegade|Im used to the CD moves being charged
+|c:|1528926825| Shotgun2010|makes sense
+|c:|1528926834|+Mega Eevee X|This is the first quick CD move
+|c:|1528926838| DeltaRenegade|Yeah
+|c:|1528926840| DeltaRenegade|Noted
+|c:|1528926982|+Mega Eevee X|This will be the best community day though
+|c:|1528926993|+Mega Eevee X|Second being dratini and third being bulbasaur
+|c:|1528927025| JB17|Worst was charmander
+|c:|1528927045| Maxalexanderpi∞|nah
+|c:|1528927046|+Mega Eevee X|Worst was Pikachu
+|c:|1528927049| Maxalexanderpi∞|^
+|c:|1528927049|+Mega Eevee X|By far
+|c:|1528927052| Maxalexanderpi∞|or bulba
+|c:|1528927060|+Mega Eevee X|Bulba was amazing
+|c:|1528927065| JB17|For me was Charmander... 0 shinies
+|c:|1528927083|+Mega Eevee X|Frenzy Plant Venusaur is one of the best grass attackers in existence
+|c:|1528927097| JB17|Very useful against kyogre
+|c:|1528927110|+Mega Eevee X|Yeah
+|c:|1528927139|+Mega Eevee X|It's the second best attacker against non blizzard Kyogres and I think the 6th best against blizzard
+|c:|1528927198| Shotgun2010|i use my 93 frenzy shiny a lot
+|c:|1528927218| Sho
+<< >pokemongo
+|uhtml|poll23|<div class="infobox"><p style="margin: 2px 0 5px 0"><span style="border:1px solid #6A6;color:#484;border-radius:4px;padding:0 3px"><i class="fa fa-bar-chart"></i> Poll</span> <strong style="font-size:11pt">Which of the *NEW* raid additions that came with the water event is your favourite?</strong></p><div style="margin-top: 5px"><button class="button" style="text-align: left" value="/poll vote 1" name="send" title="Vote for 1. T1: Shellder">1. <strong>T1: Shellder</strong></button></div><div style="margin-top: 5px"><button class="button" style="text-align: left" value="/poll vote 2" name="send" title="Vote for 2. T2: Marshtomp">2. <strong>T2: Marshtomp</strong></button></div><div style="margin-top: 5px"><button class="button" style="text-align: left" value="/poll vote 3" name="send" title="Vote for 3. T3: Sharpedo">3. <strong>T3: Sharpedo</strong></button></div><div style="margin-top: 7px; padding-left: 12px"><button value="/poll results" name="send" title="View results - you will not be able to vote after viewing results"><small>(View results)</small></button></div></div>
+<< >pokemongo
+|L| road blocks
+>> |/cmd userdetails yashton
+<< |queryresponse|userdetails|{"userid":"yashton","avatar":170,"group":" ","rooms":{"pokemongo":{}}}
+>> |/utm null
+>> |/challenge yashton, gen7randombattle
+<< |popup|You can't battle yourself. The best you can do is open PS in Private Browsing (or another browser) and log into a different username, and battle that username.
+<< >pokemongo
+|N| Jon The Bastard|philanselmo
+<< >pokemongo
+|L| Jon The Bastard
+<< >pokemongo
+|J| Jon The Bastard
+<< >pokemongo
+|J| road blocks
+<< >pokemongo
+|L| road blocks
+<< >pokemongo
+|L| Jon The Bastard
+<< |updatechallenges|{"challengesFrom":{"yashtontesting":"gen7ubers"},"challengeTo":null}
+<< >pokemongo
+|L|+Mega Eevee X
+<< >pokemongo
+|J| deanasaurus
+<< >pokemongo
+|J| Jon The Bastard
+<< >pokemongo
+|L| deanasaurus
+>> |/utm |gliscor|toxicorb|H|swordsdance,earthquake,facade,roost|Jolly|244,,44,,68,152|||||]|clefable|leftovers|1|stealthrock,moonblast,wish,softboiled|Bold|252,,252,,,4||,0,,,,|||]|toxapex|payapaberry|H|toxic,scald,haze,recover|Calm|252,,92,,164,||,0,,,,|||]|latias|latiasite||surf,icebeam,hiddenpowerfire,recover|Timid|248,,8,,,252||,0,,,,|||]|ferrothorn|leftovers||spikes,leechseed,powerwhip,gyroball|Sassy|252,,92,,164,||,,,,,0|||]|tyranitar|choicescarf||stoneedge,crunch,pursuit,earthquake|Jolly|,252,,,4,252|||||
+>> |/accept yashtontesting
+<< |updatechallenges|{"challengesFrom":{},"challengeTo":null}
+<< |updatesearch|{"searching":[],"games":null}
+<< |updatesearch|{"searching":[],"games":{"battle-gen7ubers-762066287":"[Gen 7] Ubers Battle"}}
+<< >battle-gen7ubers-762066287
+|init|battle
+|title|yashton_testing vs. yashton
+|j|☆yashton_testing
+|j|☆yashton
+
+<< >battle-gen7ubers-762066287
+|request|
+<< >battle-gen7ubers-762066287
+
+|player|p1|yashton_testing|2
+
+<< >battle-gen7ubers-762066287
+|request|{"teamPreview":true,"maxTeamSize":6,"side":{"name":"yashton","id":"p2","pokemon":[{"ident":"p2: Gliscor","details":"Gliscor, M","condition":"352/352","active":true,"stats":{"atk":226,"def":297,"spa":113,"spd":203,"spe":290},"moves":["swordsdance","earthquake","facade","roost"],"baseAbility":"poisonheal","item":"toxicorb","pokeball":"pokeball","ability":"poisonheal"},{"ident":"p2: Clefable","details":"Clefable, F","condition":"394/394","active":false,"stats":{"atk":130,"def":269,"spa":226,"spd":216,"spe":157},"moves":["stealthrock","moonblast","wish","softboiled"],"baseAbility":"magicguard","item":"leftovers","pokeball":"pokeball","ability":"magicguard"},{"ident":"p2: Toxapex","details":"Toxapex, M","condition":"304/304","active":false,"stats":{"atk":117,"def":363,"spa":142,"spd":397,"spe":106},"moves":["toxic","scald","haze","recover"],"baseAbility":"regenerator","item":"payapaberry","pokeball":"pokeball","ability":"regenerator"},{"ident":"p2: Latias","details":"Latias, F","condition":"363/363","active":false,"stats":{"atk":148,"def":218,"spa":256,"spd":296,"spe":350},"moves":["surf","icebeam","hiddenpowerfire60","recover"],"baseAbility":"levitate","item":"latiasite","pokeball":"pokeball","ability":"levitate"},{"ident":"p2: Ferrothorn","details":"Ferrothorn, F","condition":"352/352","active":false,"stats":{"atk":224,"def":321,"spa":144,"spd":339,"spe":40},"moves":["spikes","leechseed","powerwhip","gyroball"],"baseAbility":"ironbarbs","item":"leftovers","pokeball":"pokeball","ability":"ironbarbs"},{"ident":"p2: Tyranitar","details":"Tyranitar, M","condition":"341/341","active":false,"stats":{"atk":367,"def":256,"spa":203,"spd":237,"spe":243},"moves":["stoneedge","crunch","pursuit","earthquake"],"baseAbility":"sandstream","item":"choicescarf","pokeball":"pokeball","ability":"sandstream"}]},"rqid":3}
+<< >battle-gen7ubers-762066287
+
+|player|p2|yashton|170
+|teamsize|p1|6
+|teamsize|p2|6
+|gametype|singles
+|gen|7
+|tier|[Gen 7] Ubers
+|seed|
+|rule|Sleep Clause Mod: Limit one foe put to sleep
+|rule|Species Clause: Limit one of each Pokémon
+|rule|OHKO Clause: OHKO moves are banned
+|rule|Moody Clause: Moody is banned
+|rule|Evasion Moves Clause: Evasion moves are banned
+|rule|Endless Battle Clause: Forcing endless battles is banned
+|rule|HP Percentage Mod: HP is shown in percentages
+|clearpoke
+|poke|p1|Venusaur, F|item
+|poke|p1|Clefable, M|item
+|poke|p1|Landorus-Therian, M|item
+|poke|p1|Greninja, M|item
+|poke|p1|Zygarde|item
+|poke|p1|Celesteela|item
+|poke|p2|Gliscor, M|item
+|poke|p2|Clefable, F|item
+|poke|p2|Toxapex, M|item
+|poke|p2|Latias, F|item
+|poke|p2|Ferrothorn, F|item
+|poke|p2|Tyranitar, M|item
+|rule|Mega Rayquaza Clause: You cannot mega evolve Rayquaza
+|teampreview
+
+<< >pokemongo
+|J|+Mega Eevee X
+>> |/leave pokemongo
+<< >pokemongo
+|deinit
+>> battle-gen7ubers-762066287|/team 123456|3
+<< >battle-gen7ubers-762066287
+|request|{"active":[{"moves":[{"move":"Swords Dance","id":"swordsdance","pp":32,"maxpp":32,"target":"self","disabled":false},{"move":"Earthquake","id":"earthquake","pp":16,"maxpp":16,"target":"allAdjacent","disabled":false},{"move":"Facade","id":"facade","pp":32,"maxpp":32,"target":"normal","disabled":false},{"move":"Roost","id":"roost","pp":16,"maxpp":16,"target":"self","disabled":false}]}],"side":{"name":"yashton","id":"p2","pokemon":[{"ident":"p2: Gliscor","details":"Gliscor, M","condition":"352/352","active":true,"stats":{"atk":226,"def":297,"spa":113,"spd":203,"spe":290},"moves":["swordsdance","earthquake","facade","roost"],"baseAbility":"poisonheal","item":"toxicorb","pokeball":"pokeball","ability":"poisonheal"},{"ident":"p2: Clefable","details":"Clefable, F","condition":"394/394","active":false,"stats":{"atk":130,"def":269,"spa":226,"spd":216,"spe":157},"moves":["stealthrock","moonblast","wish","softboiled"],"baseAbility":"magicguard","item":"leftovers","pokeball":"pokeball","ability":"magicguard"},{"ident":"p2: Toxapex","details":"Toxapex, M","condition":"304/304","active":false,"stats":{"atk":117,"def":363,"spa":142,"spd":397,"spe":106},"moves":["toxic","scald","haze","recover"],"baseAbility":"regenerator","item":"payapaberry","pokeball":"pokeball","ability":"regenerator"},{"ident":"p2: Latias","details":"Latias, F","condition":"363/363","active":false,"stats":{"atk":148,"def":218,"spa":256,"spd":296,"spe":350},"moves":["surf","icebeam","hiddenpowerfire60","recover"],"baseAbility":"levitate","item":"latiasite","pokeball":"pokeball","ability":"levitate"},{"ident":"p2: Ferrothorn","details":"Ferrothorn, F","condition":"352/352","active":false,"stats":{"atk":224,"def":321,"spa":144,"spd":339,"spe":40},"moves":["spikes","leechseed","powerwhip","gyroball"],"baseAbility":"ironbarbs","item":"leftovers","pokeball":"pokeball","ability":"ironbarbs"},{"ident":"p2: Tyranitar","details":"Tyranitar, M","condition":"341/341","active":false,"stats":{"atk":367,"def":256,"spa":203,"spd":237,"spe":243},"moves":["stoneedge","crunch","pursuit","earthquake"],"baseAbility":"sandstream","item":"choicescarf","pokeball":"pokeball","ability":"sandstream"}]},"rqid":5}
+<< >battle-gen7ubers-762066287
+
+|
+|start
+|switch|p1a: Venusaur|Venusaur, F|100/100
+|switch|p2a: Gliscor|Gliscor, M|352/352
+|turn|1
