@@ -5,17 +5,19 @@ import play.api.libs.json.Json
 import science.snelgrove.showdown.protocol._
 import java.time.Instant
 
-class MessageParser {
+object MessageParser {
   import GeneralParser._
 
   private val obj = "^o$".r
   private val arr = "^a(.*)$".r
-  def parseRaw(msg: String) = msg match {
-    case obj() => Unit
+  def parseRaw(msg: String): Option[List[Target]] = msg match {
+    case obj() => None
     case arr(rest) =>
-      for {
-        line <- Json.parse(rest).as[Seq[String]]
-      } yield parse(line)
+      Some {
+        for {
+          line <- Json.parse(rest).as[Seq[String]]
+        } yield parse(line)
+      }.map(_.toList)
   }
 
   def parse(line: String) : Target = {
@@ -34,10 +36,11 @@ class MessageParser {
   private val battle = "^([bB]|battle)$".r
 
   def parseMessage(message: String): ShowdownMessage = {
+
     if (!message.startsWith("|")) {
       Log(message)
     } else {
-      val tokenized = message.tail.split('|').toSeq
+      val tokenized = message.tail.split('|').toList
       tokenized match {
         case "" :: msg :: Nil =>
           Log(msg)
@@ -245,8 +248,8 @@ object GeneralParser {
   }
 
   def parseRoomType(room: String) : RoomType = room match {
-    case "battle" => BattleRoom
-    case "chat" => ChatRoom
+    case "battle" => BattleType
+    case "chat" => ChatType
   }
 
   def parseUser(user: String): User = {
