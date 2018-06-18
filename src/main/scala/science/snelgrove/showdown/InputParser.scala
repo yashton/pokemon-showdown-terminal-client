@@ -5,14 +5,19 @@ import com.googlecode.lanterna.input.KeyType
 import science.snelgrove.showdown.protocol.TextCommand
 import akka.event.Logging
 
+case class RoomSwitch(i: Int)
 case class ChatTypingUpdate(text: String)
+
 class InputParser(val tempoutput: ActorRef, val screen: ActorRef) extends Actor {
   val log = Logging(context.system, this)
 
   var buffer = new StringBuilder()
 
   def receive = {
-    case x @ KeyCharacter(Left(c), _, _, _) =>
+    case x @ KeyCharacter(Left(c), _, _, _)
+        if ('0' to '9').contains(c) =>
+      screen ! RoomSwitch(c - '0')
+    case x @ KeyCharacter(Left(c), false, false, _) =>
       buffer += c
       screen ! ChatTypingUpdate(buffer.toString())
     case x @ KeyCharacter(Right(KeyType.Backspace), _, _, _) =>

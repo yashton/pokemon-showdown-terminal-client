@@ -9,28 +9,32 @@ sealed trait RoomId
 case class RoomName(name: String) extends RoomId
 case object GlobalName extends RoomId
 
-class RoomRouter() extends Actor {
+class RoomRouter(val output: ActorRef) extends Actor {
   val log = Logging(context.system, this)
 
   val rooms: mutable.Map[RoomId, ActorRef] =
-    mutable.Map(GlobalName -> context.system.actorOf(Props(classOf[RoomActor], "room-global")))
+    mutable.Map(GlobalName -> context.system.actorOf(
+      Props(classOf[RoomActor], "global", output), "room-global"))
 
   val global = rooms(GlobalName)
-  global ! RoomInit(ChatType)
-  // todo handle room supervision
+  global ! RoomInit(GlobalType)
 
   def receive = {
+    // TODO making the distinction from global messages and the lobby
     case x @ Global(msgs) =>
-      log.info(x.toString)
+      log.debug(s"global ${msgs.size}")
       for (msg <- msgs) global ! msg
     case x @ Room("global", msgs) =>
-      log.info(x.toString)
+      log.debug(s"global ${msgs.size}")
       for (msg <- msgs) global ! msg
     case x @ Room(name, msgs) =>
-      log.info(x.toString)
+      log.debug(s"$name ${msgs.size}")
       val id = RoomName(name)
-      if (!(rooms contains id))
-        rooms + (id -> context.system.actorOf(Props(classOf[RoomActor], s"room-$name")))
+      if (!(rooms contains id)) {
+        rooms += (id -> context.actorOf(
+          Props(classOf[RoomActor], name, output), s"room-$name"))
+        log.info(s"Creating room $name")
+      }
       val room = rooms(id)
       for (msg <- msgs) room ! msg
     case x =>

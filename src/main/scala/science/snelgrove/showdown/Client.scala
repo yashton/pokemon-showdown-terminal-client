@@ -30,26 +30,40 @@ object Client extends App {
   import system.dispatcher
   val log = Logging(system, "client")
 
-  val roomRouter = system.actorOf(Props[RoomRouter], "room-router")
-
   val term = new UnixTerminal(System.in, System.out, Charset.forName("UTF-8"),
     UnixLikeTerminal.CtrlCBehaviour.CTRL_C_KILLS_APPLICATION)
 
   val url = "wss://sim2.psim.us/showdown/809/yp5rljjy/websocket"
 
-  val incoming =
+  lazy val screenRender = system.actorOf(
+    Props(classOf[ScreenRender], new TerminalScreen(term)), "console-renderer")
+
+  lazy val inputParser = system.actorOf(
+    Props(classOf[InputParser], outputActor, screenRender), "input-parser")
+
+  lazy val roomRouter = system.actorOf(Props(classOf[RoomRouter], screenRender), "room-router")
+
+  lazy val incoming =
     Flow[Message]
       .flatMapConcat {
         case message: TextMessage.Strict =>
-//          log.debug(message.text)
           MessageParser.parseRaw(message.text) match {
             case Some(l) => Source.apply[Target](l)
             case None => Source.empty[Target]
           }
+        case message: TextMessage.Streamed =>
+          message.textStream
+            .reduce(_ + _)
+            .flatMapConcat { s =>
+              MessageParser.parseRaw(s) match {
+                case Some(l) => Source.apply[Target](l)
+                case None => Source.empty[Target]
+              }
+            }
       }
       .to(Sink.actorRef(roomRouter, Done))
 
-  val outgoing: Source[Message, ActorRef] =
+  lazy val outgoing: Source[Message, ActorRef] =
     Source.actorRef[ShowdownCommand](10000, OverflowStrategy.fail)
       .map(OutgoingSerializer.serialize)
       .log("outgoing")
@@ -61,12 +75,6 @@ object Client extends App {
   val (upgradeResponse, outputActor) =
     Http().singleWebSocketRequest(WebSocketRequest(url), flow)
 
-  val screenRender = system.actorOf(
-    Props(classOf[ScreenRender], new TerminalScreen(term)), "console-renderer")
-
-  val inputParser = system.actorOf(
-    Props(classOf[InputParser], outputActor, screenRender), "input-parser")
-
   Keyboard.graph(term, inputParser).run()
 
   val connected = upgradeResponse.map { upgrade =>
@@ -77,7 +85,7 @@ object Client extends App {
     }
   }
 
-  connected.onComplete(f => log.info(f.toString()))
+  connected.onComplete(f => log.info(s"Connected ${f.toString()}"))
 }
 
 object Keyboard {
@@ -92,6 +100,8 @@ object Keyboard {
     Source.tick(0.seconds, 100.milliseconds, 'poll)
       .flatMapConcat(_ =>
         Source.unfold('poll)(_ => Option(term.pollInput()).map('poll -> _)))
+      .log("keyboard")
       .map(keystrokeConvert(_))
+      .log("keyboard)")
       .to(Sink.actorRef(inputParser, Done))
 }

@@ -2,6 +2,7 @@ package science.snelgrove.showdown.protocol
 
 sealed trait RoomType
 case object ChatType extends RoomType
+case object GlobalType extends RoomType
 case object BattleType extends RoomType
 
 case class User(name: String, rank: Option[Char])

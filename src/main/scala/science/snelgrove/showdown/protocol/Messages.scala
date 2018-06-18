@@ -10,21 +10,26 @@ sealed trait ShowdownMessage
 case object Empty extends ShowdownMessage
 
 sealed trait RoomMessage extends ShowdownMessage
-case class Log(text: String) extends RoomMessage
-case class Chat(user: User, text: String, timestamp: Option[Instant]) extends RoomMessage
-case class Join(user: User) extends RoomMessage
-case class Leave(user: User) extends RoomMessage
-case class Name(user: User, oldId: String) extends RoomMessage
 case class RoomInit(roomType: RoomType) extends RoomMessage
-case class RoomUsers(users: Seq[User]) extends RoomMessage
-case class DirectMessage(msg: String) extends RoomMessage
-case class HtmlMessage(body: String) extends RoomMessage
-case class DynamicHtmlMessage(name: String, body: String) extends RoomMessage
-case class DynamicHtmlMessageUpdate(name: String, body: String) extends RoomMessage
-case class Timestamp(time: Instant) extends RoomMessage
-case class BattleStart(room: String, playerOne: User, playerTwo: User) extends RoomMessage
+case class RoomTitle(title: String) extends RoomMessage // Not Documented
 case object RoomDeinit extends RoomMessage // Not Documented
-case class RawMessage(body: String) extends RoomMessage // Not Documented
+
+sealed trait ChatMessage extends RoomMessage
+case class Log(text: String) extends ChatMessage
+case class Chat(user: User, text: String, timestamp: Option[Instant]) extends ChatMessage
+case class DirectMessage(msg: String) extends ChatMessage
+case class HtmlMessage(body: String) extends ChatMessage
+case class DynamicHtmlMessage(name: String, body: String) extends ChatMessage
+case class DynamicHtmlMessageUpdate(name: String, body: String) extends ChatMessage
+case class Timestamp(time: Instant) extends ChatMessage
+case class BattleStart(room: String, playerOne: User, playerTwo: User) extends ChatMessage
+case class RawMessage(body: String) extends ChatMessage // Not Documented
+
+sealed trait UsersMessage extends RoomMessage
+case class Join(user: User) extends UsersMessage
+case class Leave(user: User) extends UsersMessage
+case class Name(user: User, oldId: String) extends UsersMessage
+case class RoomUsers(users: Seq[User]) extends UsersMessage
 
 sealed trait GlobalMessage extends ShowdownMessage
 case class UnknownMessage(msg: String) extends GlobalMessage

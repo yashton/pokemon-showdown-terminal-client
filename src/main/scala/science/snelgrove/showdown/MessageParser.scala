@@ -30,6 +30,7 @@ object MessageParser {
   }
 
   private val chat = "^(c|chat)$".r
+  private val chatTs = "^(c|chat):$".r
   private val leave = "^([lL]|leave)$".r
   private val join = "^([jJ]|join)$".r
   private val name = "^([nN]|name)$".r
@@ -46,18 +47,19 @@ object MessageParser {
           Log(msg)
         case Nil =>
           Empty
-
         // Room messages
-        case chat() :: user :: msg :: Nil =>
+        case chat(_) :: user :: msg :: Nil =>
           Chat(parseUser(user), msg, None)
-        case "c:" :: timestamp :: user :: msg :: Nil =>
+        case chatTs(_) :: timestamp :: user :: msg :: Nil =>
           Chat(parseUser(user), msg, Some(Instant.ofEpochSecond(timestamp.toInt)))
-        case join() :: user :: Nil =>
+        case join(_) :: user :: Nil =>
           Join(parseUser(user))
-        case leave() :: user :: Nil =>
+        case leave(_) :: user :: Nil =>
           Leave(parseUser(user))
-        case name() :: user :: old :: Nil =>
+        case name(_) :: user :: old :: Nil =>
           Name(parseUser(user), old)
+        case "title" :: name :: Nil =>
+          RoomTitle(name)
         case "init" :: roomType :: Nil =>
           RoomInit(parseRoomType(roomType))
         case "users" :: list :: Nil =>

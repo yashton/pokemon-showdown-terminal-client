@@ -8,24 +8,25 @@ import scala.collection.mutable.ListBuffer
 /**
   * Handles the primary chat behavior of the room.
   */
-class BattleRoom extends Actor {
+class GlobalRoom extends Actor {
   val log = Logging(context.system, this)
   val chat = context.actorOf(Props[ChatBuffer], s"${self.path.name}-chat")
-  val battle = context.actorOf(Props[BattleProcessor], s"${self.path.name}-battle")
   val users = context.actorOf(Props[UserList], s"${self.path.name}-user")
 
-  var current = BattleState(Seq(), Seq(), Seq())
+
+  val messageBuffer: Buffer[GlobalMessage] = new ListBuffer()
+  var current = GlobalState(Seq(), Seq(), Seq())
   def receive = {
     case c: ChatMessage => chat ! c
-    case u: UsersMessage => users ! u
+    case m: GlobalMessage =>
+      messageBuffer += m
+      current = current.copy(global = messageBuffer.toIndexedSeq)
+      context.parent ! current
     case UserListUpdate(u) =>
       current = current.copy(users = u)
       context.parent ! current
     case ChatUpdate(u) =>
       current = current.copy(chat = u)
-      context.parent ! current
-    case BattleUpdate(u) =>
-      current = current.copy(battle = u)
       context.parent ! current
   }
 }

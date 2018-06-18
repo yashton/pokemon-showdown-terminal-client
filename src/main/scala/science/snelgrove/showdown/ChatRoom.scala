@@ -1,36 +1,28 @@
 package science.snelgrove.showdown
 
-import akka.actor.Actor
+import akka.actor.{ Actor, Props }
 import akka.event.Logging
 import scala.collection.mutable.{ Buffer, SortedSet, TreeSet }
 import science.snelgrove.showdown.protocol._
 import scala.collection.mutable.ListBuffer
+
 /**
-  * Handles the primary chat behavior of the room.
-  * Mixed into RoomActor.
+  * Handles behavior of a chat room.
   */
-trait ChatRoom extends Actor {
+class ChatRoom extends Actor {
   val log = Logging(context.system, this)
+  val chat = context.actorOf(Props[ChatBuffer], s"${self.path.name}-chat")
+  val users = context.actorOf(Props[UserList], s"${self.path.name}-user")
 
-  val messageBuffer: Buffer[RoomMessage] = new ListBuffer()
-  def chat: PartialFunction[Any, Unit] = {
-    case x: RoomMessage => messageBuffer += x
-    case RoomDeinit => context.stop(self)
-    case x => log.info(x.toString)
-  }
-}
-
-trait RoomUserList extends Actor {
-  val userList: SortedSet[String] = new TreeSet()
-  def users: PartialFunction[Any, Unit] = {
-    case Join(user) =>
-      userList += user.name
-    case Leave(user) => userList -= user.name
-    case RoomUsers(current) =>
-      userList.clear()
-      userList ++= (current.map(_.name))
-    case Name(user, old) =>
-      userList -= old
-      userList += user.name
+  var current = ChatState(Seq(), Seq())
+  def receive = {
+    case c: ChatMessage => chat ! c
+    case u: UsersMessage => users ! u
+    case UserListUpdate(u) =>
+      current = current.copy(users = u)
+      context.parent ! current
+    case ChatUpdate(u) =>
+      current = current.copy(chat = u)
+      context.parent ! current
   }
 }

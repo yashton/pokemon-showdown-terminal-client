@@ -2,24 +2,123 @@ package science.snelgrove.showdown
 
 import akka.actor.{ Actor, ActorRef, ActorSystem, Cancellable }
 import akka.event.Logging
-import com.googlecode.lanterna.TerminalPosition
-import com.googlecode.lanterna.screen.Screen
+import com.googlecode.lanterna.graphics.TextGraphics
+import com.googlecode.lanterna.{ TerminalPosition, TerminalSize, TextColor }
+import com.googlecode.lanterna.screen.TerminalScreen
+import scala.collection.mutable.LinkedHashMap
+import science.snelgrove.showdown.protocol._
 
 /**
   * Manages rendering of game state
   */
-class ScreenRender(val screen: Screen) extends Actor {
+class ScreenRender(val screen: TerminalScreen) extends Actor {
   val log = Logging(context.system, this)
-  //TODO on shutdown stop screen
-  screen.startScreen()
+  val userSize = 20
+  var rooms: LinkedHashMap[String, StateUpdate] = new LinkedHashMap()
+  var inputText: String = ""
+  var activeRoom: String = "global"
+
+  override def preStart(): Unit = {
+    screen.startScreen()
+    screen.getTerminal().addResizeListener((t, s) => if (s != null) self ! s)
+    renderAll()
+    screen.refresh()
+  }
+
+  override def postStop(): Unit = {
+    screen.stopScreen()
+  }
+
+  def renderAll(): Unit = {
+    renderBar()
+    renderInput()
+    renderChat()
+    renderUsers()
+  }
+
+  def renderBar(): Unit = {
+    val g = screen.newTextGraphics()
+    val r = g.getSize.getRows
+    val c = g.getSize.getColumns
+    g.setBackgroundColor(TextColor.ANSI.BLUE)
+    g.setForegroundColor(TextColor.ANSI.BLACK)
+    g.drawLine(0, r - 2, c - 1, r - 2, ' ')
+    g.drawLine(c - userSize - 2, 0, c - userSize - 2, r - 3, '|')
+    val names = for {
+      ((name, room), i) <- rooms.zipWithIndex
+      active = if (name == activeRoom) "*" else " "
+    } yield s"$i:${name}${active}"
+
+    g.putString(0, r - 2, names.mkString(" ").take(c))
+  }
+
+  def renderInput(): Unit = {
+    val g = screen.newTextGraphics()
+    val c = g.getSize.getColumns
+    val r = g.getSize.getRows
+    g.drawLine(0, r - 1, c - 1, r - 1, ' ')
+    g.putString(0, r - 1, inputText)
+    screen.setCursorPosition(new TerminalPosition(inputText.size, r - 1))
+  }
+
+  def renderChat(): Unit = {
+    val g = screen.newTextGraphics
+    val c = g.getSize.getColumns
+    val r = g.getSize.getRows
+
+    val (sx, sy) = (c - userSize - 1, r - 2)
+    val (ox, oy) = (0, 0)
+    val history = rooms.get(activeRoom).map(_.state.chat)
+    history.foreach { h =>
+      for {
+        (u, i) <- h.takeRight(Math.min(sy, h.size)).zipWithIndex
+      } g.putString(ox, oy + i, u.toString.take(sx  - 1).padTo(sx - 1, ' '))
+    }
+  }
+
+  def renderUsers(): Unit = {
+    val g = screen.newTextGraphics
+    val c = g.getSize.getColumns
+    val r = g.getSize.getRows
+
+    val (sx, sy) = (userSize, r - 3)
+    val (ox, oy) = (c - userSize - 1, 1)
+    val room = rooms.get(activeRoom).map(_.state.users)
+    room.foreach { users =>
+      for {
+        (u, i) <- users.takeRight(Math.min(sy, users.size)).zipWithIndex
+      } g.putString(ox, oy + i, u.take(sx  - 1).padTo(sx, ' '))
+
+      g.setBackgroundColor(TextColor.ANSI.BLUE)
+      g.setForegroundColor(TextColor.ANSI.BLACK)
+      g.putString(c - 1 - userSize, 0, s"Users ${users.size}".padTo(sx, ' '))
+    }
+  }
 
   def receive = {
-    case ChatTypingUpdate(text) =>
-      screen.clear
-      val graphics = screen.newTextGraphics()
-      graphics.putString(0, 0, text)
-      screen.setCursorPosition(new TerminalPosition(text.size, 0))
+    case s: TerminalSize =>
+      log.info("Resizing screen")
+      if (screen.doResizeIfNecessary() != null) {
+        screen.clear()
+        renderAll()
+        screen.refresh()
+      }
+    case s @ StateUpdate(n, _, _) =>
+      rooms.update(n, s)
+      renderAll()
       screen.refresh()
-    case msg => log.info(msg.toString())
+    case ChatTypingUpdate(text) =>
+      inputText = text
+      renderInput()
+      screen.refresh()
+    case RoomSwitch(i) =>
+      if (i <= rooms.size) {
+        activeRoom = rooms.keys.toIndexedSeq.apply(i)
+        log.info(s"Switching rooms to ${activeRoom}")
+        screen.clear()
+        renderAll()
+        screen.refresh()
+      }
+    case msg => log.warning(msg.toString())
   }
 }
