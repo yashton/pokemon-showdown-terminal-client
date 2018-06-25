@@ -14,7 +14,7 @@ class InputParser(val tempoutput: ActorRef, val screen: ActorRef) extends Actor 
   var buffer = new StringBuilder()
 
   def receive = {
-    case x @ KeyCharacter(Left(c), _, _, _)
+    case x @ KeyCharacter(Left(c), false, true, false)
         if ('0' to '9').contains(c) =>
       screen ! RoomSwitch(c - '0')
     case x @ KeyCharacter(Left(c), false, false, _) =>

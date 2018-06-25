@@ -1,0 +1,149 @@
+{
+  "teamPreview": true,
+  "maxTeamSize": 6,
+  "side": {
+    "name": "yashton",
+    "id": "p2",
+    "pokemon": [
+      {
+        "ident": "p2: Gliscor",
+        "details": "Gliscor, M",
+        "condition": "352/352",
+        "active": true,
+        "stats": {
+          "atk": 226,
+          "def": 297,
+          "spa": 113,
+          "spd": 203,
+          "spe": 290
+        },
+        "moves": [
+          "swordsdance",
+          "earthquake",
+          "facade",
+          "roost"
+        ],
+        "baseAbility": "poisonheal",
+        "item": "toxicorb",
+        "pokeball": "pokeball",
+        "ability": "poisonheal"
+      },
+      {
+        "ident": "p2: Clefable",
+        "details": "Clefable, F",
+        "condition": "394/394",
+        "active": false,
+        "stats": {
+          "atk": 130,
+          "def": 269,
+          "spa": 226,
+          "spd": 216,
+          "spe": 157
+        },
+        "moves": [
+          "stealthrock",
+          "moonblast",
+          "wish",
+          "softboiled"
+        ],
+        "baseAbility": "magicguard",
+        "item": "leftovers",
+        "pokeball": "pokeball",
+        "ability": "magicguard"
+      },
+      {
+        "ident": "p2: Toxapex",
+        "details": "Toxapex, M",
+        "condition": "304/304",
+        "active": false,
+        "stats": {
+          "atk": 117,
+          "def": 363,
+          "spa": 142,
+          "spd": 397,
+          "spe": 106
+        },
+        "moves": [
+          "toxic",
+          "scald",
+          "haze",
+          "recover"
+        ],
+        "baseAbility": "regenerator",
+        "item": "payapaberry",
+        "pokeball": "pokeball",
+        "ability": "regenerator"
+      },
+      {
+        "ident": "p2: Latias",
+        "details": "Latias, F",
+        "condition": "363/363",
+        "active": false,
+        "stats": {
+          "atk": 148,
+          "def": 218,
+          "spa": 256,
+          "spd": 296,
+          "spe": 350
+        },
+        "moves": [
+          "surf",
+          "icebeam",
+          "hiddenpowerfire60",
+          "recover"
+        ],
+        "baseAbility": "levitate",
+        "item": "latiasite",
+        "pokeball": "pokeball",
+        "ability": "levitate"
+      },
+      {
+        "ident": "p2: Ferrothorn",
+        "details": "Ferrothorn, F",
+        "condition": "352/352",
+        "active": false,
+        "stats": {
+          "atk": 224,
+          "def": 321,
+          "spa": 144,
+          "spd": 339,
+          "spe": 40
+        },
+        "moves": [
+          "spikes",
+          "leechseed",
+          "powerwhip",
+          "gyroball"
+        ],
+        "baseAbility": "ironbarbs",
+        "item": "leftovers",
+        "pokeball": "pokeball",
+        "ability": "ironbarbs"
+      },
+      {
+        "ident": "p2: Tyranitar",
+        "details": "Tyranitar, M",
+        "condition": "341/341",
+        "active": false,
+        "stats": {
+          "atk": 367,
+          "def": 256,
+          "spa": 203,
+          "spd": 237,
+          "spe": 243
+        },
+        "moves": [
+          "stoneedge",
+          "crunch",
+          "pursuit",
+          "earthquake"
+        ],
+        "baseAbility": "sandstream",
+        "item": "choicescarf",
+        "pokeball": "pokeball",
+        "ability": "sandstream"
+      }
+    ]
+  },
+  "rqid": 3
+}

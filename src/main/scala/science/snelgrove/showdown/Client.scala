@@ -1,7 +1,7 @@
 package science.snelgrove.showdown
 
 import akka.actor.{ Actor, ActorRef, ActorSystem, Cancellable, Props }
-import akka.event.Logging
+import akka.event.{ Logging, LoggingAdapter }
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.ws._
@@ -75,7 +75,7 @@ object Client extends App {
   val (upgradeResponse, outputActor) =
     Http().singleWebSocketRequest(WebSocketRequest(url), flow)
 
-  Keyboard.graph(term, inputParser).run()
+  Keyboard.graph(term, inputParser, log).run()
 
   val connected = upgradeResponse.map { upgrade =>
     if (upgrade.response.status == StatusCodes.SwitchingProtocols) {
@@ -96,12 +96,16 @@ object Keyboard {
     }
     KeyCharacter(char, key.isCtrlDown(), key.isAltDown(), key.isShiftDown())
   }
-  def graph(term: Terminal, inputParser: ActorRef) =
+  def graph(term: Terminal, inputParser: ActorRef, log: LoggingAdapter) =
     Source.tick(0.seconds, 100.milliseconds, 'poll)
       .flatMapConcat(_ =>
         Source.unfold('poll)(_ => Option(term.pollInput()).map('poll -> _)))
-      .log("keyboard")
+      // .map { k =>
+        // log.debug(s"type '${k.getKeyType}' char '${k.getCharacter}'" +
+        //   " ctrl ${k.isCtrlDown} alt ${k.isAltDown} shift ${k.isShiftDown}")
+      //   k
+      // }
       .map(keystrokeConvert(_))
-      .log("keyboard)")
+      // .log("keyboard)")
       .to(Sink.actorRef(inputParser, Done))
 }

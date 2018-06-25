@@ -2,7 +2,10 @@ package science.snelgrove.showdown.protocol
 import java.time.Instant
 import play.api.libs.json.JsValue
 
-sealed trait Target
+sealed trait Target {
+  def msgs: Seq[ShowdownMessage]
+}
+
 case class Room(room: String, msgs: Seq[ShowdownMessage]) extends Target
 case class Global(msgs: Seq[ShowdownMessage]) extends Target
 
@@ -45,6 +48,9 @@ case class UpdateSearch(body: JsValue) extends GlobalMessage
 case class UpdateChallenges(body: JsValue) extends GlobalMessage
 case class QueryResponse(queryType: String, body: JsValue) extends GlobalMessage
 
+case object Seed extends ShowdownMessage
+case class UndocumentedStart(pokemon: PokemonId) extends ShowdownMessage
+
 sealed trait BattleMessage extends ShowdownMessage
 case class PlayerConnect(player: Player, user: User, avatar: String) extends BattleMessage
 case class BattleGameType(gameType: GameType) extends BattleMessage
@@ -56,53 +62,63 @@ case object BattleStart extends BattleMessage
 case object TeamPreview extends BattleMessage
 case class PreviewPokemon(player: Player, details: PokemonDetails, item: String) extends BattleMessage
 case object ClearPreview extends BattleMessage
-case class Request(body: JsValue) extends BattleMessage
+case class Request(body: Option[JsValue]) extends BattleMessage
 case class BattleTimer(active: Boolean, message: String) extends BattleMessage
 case class Turn(number: Int) extends BattleMessage
-case class Win(user: User) extends BattleMessage
-case object Tie extends BattleMessage
 case class TeamSize(player: Player, size: Int) extends BattleMessage // Not Documented
 case object Upkeep extends BattleMessage // Not Documented
 
+sealed trait TerminalState extends BattleMessage
+case class Win(user: User) extends TerminalState
+case object Tie extends TerminalState
+
+
 sealed trait MajorAction extends BattleMessage
-case class Move(pokemon: PokemonId, move: String, target: Option[PokemonId], hit: Boolean) extends MajorAction
-case class Switch(pokemon: PokemonId, details: PokemonDetails, status: PokemonStatus) extends MajorAction
-case class Drag(pokemon: PokemonId, details: PokemonDetails, status: PokemonStatus) extends MajorAction
-case class DetailsChange(pokemon: PokemonId, details: PokemonDetails, status: PokemonStatus) extends MajorAction
-case class FormeChange(pokemon: PokemonId, species: String, status: PokemonStatus) extends MajorAction
-case class Replace(pokemon: PokemonId, details: PokemonDetails, status: PokemonStatus) extends MajorAction
-case class Swap(pokemon: PokemonId, position: Int) extends MajorAction
-case class Cant(pokemon: PokemonId, reason: String, move: Option[String]) extends MajorAction
-case class Faint(pokemon: PokemonId) extends MajorAction
+sealed trait PokemonAction {
+  def pokemon: PokemonId
+}
+
+case class Move(pokemon: PokemonId, move: String, target: Option[PokemonId], hit: Boolean) extends MajorAction with PokemonAction
+case class Switch(pokemon: PokemonId, details: PokemonDetails, status: PokemonStatus) extends MajorAction with PokemonAction
+case class Drag(pokemon: PokemonId, details: PokemonDetails, status: PokemonStatus) extends MajorAction with PokemonAction
+case class DetailsChange(pokemon: PokemonId, details: PokemonDetails, status: PokemonStatus) extends MajorAction with PokemonAction
+case class FormeChange(pokemon: PokemonId, species: String, status: PokemonStatus) extends MajorAction with PokemonAction
+case class Replace(pokemon: PokemonId, details: PokemonDetails, status: PokemonStatus) extends MajorAction with PokemonAction
+case class Swap(pokemon: PokemonId, position: Int) extends MajorAction with PokemonAction
+case class Cant(pokemon: PokemonId, reason: String, move: Option[String]) extends MajorAction with PokemonAction
+case class Faint(pokemon: PokemonId) extends MajorAction with PokemonAction
 
 sealed trait MinorAction extends BattleMessage
-case class Failed(pokemon: PokemonId, action: String) extends MinorAction
-case class Damage(pokemon: PokemonId, status: PokemonStatus) extends MinorAction
-case class Heal(pokemon: PokemonId, status: PokemonStatus) extends MinorAction
-case class Status(pokemon: PokemonId, effect: StatusEffect) extends MinorAction
-case class Cure(pokemon: PokemonId, effect: StatusEffect) extends MinorAction
-case class CureTeam(pokemon: PokemonId) extends MinorAction
-case class Boost(pokemon: PokemonId, stat: Stat, amount: Int, details: Option[String]) extends MinorAction
-case class Unboost(pokemon: PokemonId, stat: Stat, amount: Int, details: Option[String]) extends MinorAction
-case class Weather(weather: String, upkeep: Boolean) extends MinorAction
+case class Weather(weather: String /* WeatherStatus */, upkeep: Boolean) extends MinorAction
 case class FieldConditionStart(condition: String) extends MinorAction
 case class FieldConditionStop(condition: String) extends MinorAction
 case class SideConditionStart(side: Player, condition: String) extends MinorAction
 case class SideConditionStop(side: Player, condition: String) extends MinorAction
-case class Crit(pokemon: PokemonId) extends MinorAction
-case class SuperEffective(pokemon: PokemonId) extends MinorAction
-case class Resisted(pokemon: PokemonId) extends MinorAction
-case class Immune(pokemon: PokemonId) extends MinorAction
-case class Item(pokemon: PokemonId, item: String) extends MinorAction
-case class EndItem(pokemon: PokemonId, item: String) extends MinorAction
-case class Ability(pokemon: PokemonId, ability: String) extends MinorAction
-case class EndAbility(pokemon: PokemonId) extends MinorAction
-case class Transform(pokemon: PokemonId, species: String) extends MinorAction
-case class MegaEvolve(pokemon: PokemonId, stone: String) extends MinorAction
 case class ActivateEffect(effect: String) extends MinorAction
 case class Hint(message: String) extends MinorAction
 case object TripleCenter extends MinorAction
 case class MiscMessage(msg: String) extends MinorAction
-case class EndEffect(pokemon: PokemonId, effect: String) extends MinorAction // Not Documented
-case class SetBoost(pokemon: PokemonId, stat: Stat, amount: Int, details: Option[String]) extends MinorAction // Not Documented
-case class Zpower(pokemon:PokemonId) extends MinorAction // Not Documented
+
+case class Failed(pokemon: PokemonId, action: String) extends MinorAction with PokemonAction
+case class Damage(pokemon: PokemonId, status: PokemonStatus) extends MinorAction with PokemonAction
+case class Heal(pokemon: PokemonId, status: PokemonStatus) extends MinorAction with PokemonAction
+case class Status(pokemon: PokemonId, effect: StatusEffect) extends MinorAction with PokemonAction
+case class Cure(pokemon: PokemonId, effect: StatusEffect) extends MinorAction with PokemonAction
+case class CureTeam(pokemon: PokemonId) extends MinorAction with PokemonAction
+case class Boost(pokemon: PokemonId, stat: Stat, amount: Int, details: Option[String]) extends MinorAction with PokemonAction
+case class Unboost(pokemon: PokemonId, stat: Stat, amount: Int, details: Option[String]) extends MinorAction with PokemonAction
+case class Crit(pokemon: PokemonId) extends MinorAction with PokemonAction
+case class SuperEffective(pokemon: PokemonId) extends MinorAction with PokemonAction
+case class Resisted(pokemon: PokemonId) extends MinorAction with PokemonAction
+case class Immune(pokemon: PokemonId) extends MinorAction with PokemonAction
+case class Item(pokemon: PokemonId, item: String) extends MinorAction with PokemonAction
+case class EndItem(pokemon: PokemonId, item: String) extends MinorAction with PokemonAction
+case class Ability(pokemon: PokemonId, ability: String) extends MinorAction with PokemonAction
+case class EndAbility(pokemon: PokemonId) extends MinorAction with PokemonAction
+case class Transform(pokemon: PokemonId, species: String) extends MinorAction with PokemonAction
+case class MegaEvolve(pokemon: PokemonId, stone: String) extends MinorAction with PokemonAction
+case class EndEffect(pokemon: PokemonId, effect: String) extends MinorAction with PokemonAction // Not Documented
+case class SetBoost(pokemon: PokemonId, stat: Stat, amount: Int, details: Option[String]) extends MinorAction with PokemonAction // Not Documented
+case class ClearNegativeBoost(pokemon: PokemonId) extends MinorAction with PokemonAction // Not Documented
+case class Zpower(pokemon: PokemonId) extends MinorAction with PokemonAction // Not Documented
+case class Activate(pokemon: PokemonId, status: String) extends MinorAction with PokemonAction // Not Documented

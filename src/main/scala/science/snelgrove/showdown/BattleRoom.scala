@@ -14,7 +14,7 @@ class BattleRoom extends Actor {
   val battle = context.actorOf(Props[BattleProcessor], s"${self.path.name}-battle")
   val users = context.actorOf(Props[UserList], s"${self.path.name}-user")
 
-  var current = BattleState(Seq(), Seq(), Seq())
+  var current = BattleState(Seq(), Seq(), GameState.defaults)
   def receive = {
     case c: ChatMessage => chat ! c
     case u: UsersMessage => users ! u
@@ -24,8 +24,8 @@ class BattleRoom extends Actor {
     case ChatUpdate(u) =>
       current = current.copy(chat = u)
       context.parent ! current
-    case BattleUpdate(u) =>
-      current = current.copy(battle = u)
+    case s: GameState =>
+      current = current.copy(battle = s)
       context.parent ! current
   }
 }

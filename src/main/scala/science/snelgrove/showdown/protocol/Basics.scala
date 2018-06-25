@@ -29,8 +29,10 @@ case class PokemonDetails(species: String, forme: Option[String],
 case class StatusEffect(description: String)
 // sealed trait StatusEffect
 // case object Unaffected extends StatusEffect
-
-// TODO enum
+// case object Poisoned extends StatusEffect
+// case object BadlyPoisoned extends StatusEffect
+// case object Paralyzed extends StatusEffect
+// case object Sleep extends StatusEffect
 
 sealed trait PokemonStatus
 case class HpStatus(hpCurrent: Int, hpMax: Int, status: Option[StatusEffect]) extends PokemonStatus
@@ -39,12 +41,41 @@ case class BinaryStatus(hpCurrent: Int, status: Option[StatusEffect]) extends Po
 case object FaintedStatus extends PokemonStatus
 
 sealed trait Stat
+case object HP extends Stat
 case object Atk extends Stat
 case object Def extends Stat
 case object SpA extends Stat
 case object SpD extends Stat
 case object Spe extends Stat
+case object Acc extends Stat
+case object Eva extends Stat
 
 sealed trait WeatherStatus
-// TODO enum
-case object NoWeather extends WeatherStatus
+case object Clear extends WeatherStatus
+case object HarshSunlight extends WeatherStatus
+case object ExtremelyHarshSunlight extends WeatherStatus
+case object Rain extends WeatherStatus
+case object HeavyRain extends WeatherStatus
+case object Hail extends WeatherStatus
+case object Sandstorm extends WeatherStatus
+case object MysteriousAirCurrent  extends WeatherStatus
+
+sealed trait PokemonType
+case object NormalType extends PokemonType
+case object FireType extends PokemonType
+case object FightingType extends PokemonType
+case object WaterType extends PokemonType
+case object FlyingType extends PokemonType
+case object GrassType extends PokemonType
+case object PoisonType extends PokemonType
+case object ElectricType extends PokemonType
+case object GroundType extends PokemonType
+case object PsychicType extends PokemonType
+case object RockType extends PokemonType
+case object IceType extends PokemonType
+case object BugType extends PokemonType
+case object DragonType extends PokemonType
+case object GhostType extends PokemonType
+case object DarkType extends PokemonType
+case object SteelType extends PokemonType
+case object FairyType extends PokemonType

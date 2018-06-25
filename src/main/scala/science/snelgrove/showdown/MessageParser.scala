@@ -45,8 +45,8 @@ object MessageParser {
       tokenized match {
         case "" :: msg :: Nil =>
           Log(msg)
-        case Nil =>
-          Empty
+        case Nil => Empty
+        case "" :: Nil => Empty
         // Room messages
         case chat(_) :: user :: msg :: Nil =>
           Chat(parseUser(user), msg, None)
@@ -58,7 +58,7 @@ object MessageParser {
           Leave(parseUser(user))
         case name(_) :: user :: old :: Nil =>
           Name(parseUser(user), old)
-        case "title" :: name :: Nil =>
+        case "title" :: name :: Nil => // Undocumented
           RoomTitle(name)
         case "init" :: roomType :: Nil =>
           RoomInit(parseRoomType(roomType))
@@ -74,9 +74,9 @@ object MessageParser {
           Timestamp(Instant.ofEpochSecond(timestamp.toInt))
         case "battle" :: room :: playerOne :: playerTwo :: Nil =>
           BattleStart(room, parseUser(playerOne), parseUser(playerTwo))
-        case "deinit" :: Nil =>
+        case "deinit" :: Nil => // Undocumented
           RoomDeinit
-        case "raw" :: msg :: Nil =>
+        case "raw" :: msg :: Nil => // Undocumented
           RawMessage(msg)
 
         // Global messages
@@ -88,7 +88,7 @@ object MessageParser {
           UserCount(count.toInt)
         case "nametaken" :: username :: reason :: Nil =>
           NameTaken(username, reason)
-        case "challstr" :: token :: Nil =>
+        case "challstr" :: unknown :: token :: Nil =>
           LoginToken(token)
         case "updateuser" :: username :: named :: avatar :: Nil =>
 
@@ -124,7 +124,9 @@ object MessageParser {
         case "start" :: Nil =>
           BattleStart
         case "request" :: json :: Nil =>
-          Request(Json.parse(json))
+          Request(Some(Json.parse(json)))
+        case "request" :: Nil =>
+          Request(None)
         case "inactive" :: msg :: Nil =>
           BattleTimer(true, msg)
         case "inactiveoff" :: msg :: Nil =>
@@ -135,10 +137,9 @@ object MessageParser {
           Win(parseUser(user))
         case "tie" :: Nil =>
           Tie
-        case "teamsize" :: player :: size :: Nil =>
+        case "teamsize" :: player :: size :: Nil => // Undocumented
           TeamSize(parsePlayer(player), size.toInt)
-        case "upkeep" :: Nil =>
-          Upkeep
+        case "upkeep" :: Nil => Upkeep // Undocumented
 
         // Battle Actions
         // TODO get the edge cases
@@ -164,9 +165,9 @@ object MessageParser {
         // Battle Minor Actions
         case "-failed" :: pokemon :: action :: Nil =>
           Failed(PokemonParser.parse(pokemon), action)
-        case "-damage" :: pokemon :: status :: Nil =>
+        case "-damage" :: pokemon :: status :: rest => // TODO misc messages from rest
           Damage(PokemonParser.parse(pokemon), StatusParser.parse(status))
-        case "-heal" :: pokemon :: status :: Nil =>
+        case "-heal" :: pokemon :: status :: rest => // TODO misc messages from rest
           Heal(PokemonParser.parse(pokemon), StatusParser.parse(status))
         case "-status" :: pokemon :: effect :: Nil =>
           Status(PokemonParser.parse(pokemon), StatusParser.parseEffect(effect))
@@ -176,23 +177,33 @@ object MessageParser {
           CureTeam(PokemonParser.parse(pokemon))
         case "-boost" :: pokemon :: stat :: amount :: details :: Nil =>
           Boost(PokemonParser.parse(pokemon), parseStat(stat), amount.toInt, Some(details))
-        case "-unboost" :: pokemon :: stat :: amount :: details :: Nil =>
-          Unboost(PokemonParser.parse(pokemon), parseStat(stat), amount.toInt, Some(details))
         case "-boost" :: pokemon :: stat :: amount :: Nil =>
           Boost(PokemonParser.parse(pokemon), parseStat(stat), amount.toInt, None)
+        case "-unboost" :: pokemon :: stat :: amount :: details :: Nil =>
+          Unboost(PokemonParser.parse(pokemon), parseStat(stat), amount.toInt, Some(details))
         case "-unboost" :: pokemon :: stat :: amount :: Nil =>
           Unboost(PokemonParser.parse(pokemon), parseStat(stat), amount.toInt, None)
-        case "-weather" :: weather :: Nil =>
+        case "-setboost" :: pokemon :: stat :: amount :: Nil => // Undocument
+          SetBoost(PokemonParser.parse(pokemon), parseStat(stat), amount.toInt, None)
+        case "-setboost" :: pokemon :: stat :: amount :: details :: Nil =>
+          SetBoost(PokemonParser.parse(pokemon), parseStat(stat), amount.toInt, Some(details))
+        case "-clearnegativeboost" :: pokemon :: rest => // Undocumented
+          ClearNegativeBoost(PokemonParser.parse(pokemon))
+        case "-weather" :: weather :: rest => // TODO misc details from rest
           Weather(weather, false)
-        case "-weather" :: weather :: "[upkeep]" :: Nil =>
-          Weather(weather, true)
+        case "seed" :: Nil => // Undocumented, leech seed?
+          Seed
         case "-fieldconditionstart" :: condition :: Nil =>
           FieldConditionStart(condition)
         case "-fieldconditionstop" :: condition :: Nil =>
           FieldConditionStop(condition)
         case "-sideconditionstart" :: side :: condition :: Nil =>
           SideConditionStart(parsePlayer(side), condition)
+        case "-sidestart" :: side :: condition :: Nil => // Undocumented
+          SideConditionStart(parsePlayer(side), condition)
         case "-sideconditionstop" :: side :: condition :: Nil =>
+          SideConditionStop(parsePlayer(side), condition)
+        case "-sidestop" :: side :: condition :: Nil => // Undocumented
           SideConditionStop(parsePlayer(side), condition)
         case "-crit" :: pokemon :: Nil =>
           Crit(PokemonParser.parse(pokemon))
@@ -200,7 +211,7 @@ object MessageParser {
           SuperEffective(PokemonParser.parse(pokemon))
         case "-resisted" :: pokemon :: Nil =>
           Resisted(PokemonParser.parse(pokemon))
-        case "-immune" :: pokemon :: Nil =>
+        case "-immune" :: pokemon :: rest => // todo details
           Immune(PokemonParser.parse(pokemon))
         case "-item" :: pokemon :: item :: Nil =>
           Item(PokemonParser.parse(pokemon), item)
@@ -216,19 +227,19 @@ object MessageParser {
           MegaEvolve(PokemonParser.parse(pokemon), stone)
         case "-activateeffect" :: effect :: Nil =>
           ActivateEffect(effect)
+        case "-activate" :: pokemon :: status :: Nil =>  // Undocumented
+          Activate(PokemonParser.parse(pokemon), status)
+        case "-start" :: pokemon :: rest => // Undocumented
+          UndocumentedStart(PokemonParser.parse(pokemon))
         case "-hint" :: message :: Nil =>
           Hint(message)
         case "-center" :: Nil =>
           TripleCenter
         case "-message" :: msg :: Nil =>
           MiscMessage(msg)
-        case "-endeffect" :: pokemon :: effect :: Nil =>
+        case "-endeffect" :: pokemon :: effect :: Nil => // Undocumented
           EndEffect(PokemonParser.parse(pokemon), effect)
-        case "-setboost" :: pokemon :: stat :: amount :: Nil =>
-          SetBoost(PokemonParser.parse(pokemon), parseStat(stat), amount.toInt, None)
-        case "-setboost" :: pokemon :: stat :: amount :: details :: Nil =>
-          SetBoost(PokemonParser.parse(pokemon), parseStat(stat), amount.toInt, Some(details))
-        case "-zmove" :: pokemon :: Nil =>
+        case "-zpower" :: pokemon :: Nil => // Undocumented
           Zpower(PokemonParser.parse(pokemon))
         case _ =>
           UnknownMessage(message)
@@ -244,9 +255,10 @@ object GeneralParser {
     case "triples" => Triples
   }
 
+  val playerMatch = "^p([12])(:.*)?".r
   def parsePlayer(player: String) : Player = player match {
-    case "p1" => PlayerOne
-    case "p2" => PlayerTwo
+    case playerMatch("1", _) => PlayerOne
+    case playerMatch("2", _) => PlayerTwo
   }
 
   def parseRoomType(room: String) : RoomType = room match {
@@ -289,7 +301,7 @@ object DetailsParser {
   val maleToken = "^, ?M".r
   val femaleToken = "^, ?F".r
   def parse(details : String) : PokemonDetails = {
-    val species :: tokens = details.split(", ?").toSeq
+    val species :: tokens = details.split(", ?").toList
     val shiny = tokens.exists(_ match {
       case shinyToken() => true
       case _ => false
@@ -305,6 +317,8 @@ object DetailsParser {
     species match {
       case speciesExtract(s, _, forme) =>
         PokemonDetails(species, Option(forme), shiny, gender, level)
+      case s: String =>
+        PokemonDetails(s, None, false, Male, 100)
     }
   }
 }
@@ -314,6 +328,7 @@ object StatusParser {
   val hpStatus = "^([0-9]+)/([0-9]+)( .*)?".r
   val binaryStatus = "^([0-9]+)/48( .*)?".r
   def parse(status: String) : PokemonStatus = status match {
+
     case "0 fnt" => FaintedStatus
     case percentStatus(current, effect) =>
       if (current.toInt > 0) PercentStatus(current.toInt, Option(effect).map(e => parseEffect(e.tail)))

@@ -22,13 +22,13 @@ class RoomRouter(val output: ActorRef) extends Actor {
   def receive = {
     // TODO making the distinction from global messages and the lobby
     case x @ Global(msgs) =>
-      log.debug(s"global ${msgs.size}")
+      log.debug(s"global ${msgs}")
       for (msg <- msgs) global ! msg
     case x @ Room("global", msgs) =>
-      log.debug(s"global ${msgs.size}")
+      log.debug(s"global ${msgs}")
       for (msg <- msgs) global ! msg
     case x @ Room(name, msgs) =>
-      log.debug(s"$name ${msgs.size}")
+      log.debug(s"$name ${msgs}")
       val id = RoomName(name)
       if (!(rooms contains id)) {
         rooms += (id -> context.actorOf(

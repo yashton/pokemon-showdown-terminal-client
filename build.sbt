@@ -1,6 +1,8 @@
 lazy val akkaHttpVersion = "10.1.1"
 lazy val akkaVersion = "2.5.12"
 
+val monocleVersion = "1.5.0"
+
 lazy val root = (project in file(".")).
   settings(
     inThisBuild(List(
@@ -23,10 +25,14 @@ lazy val root = (project in file(".")).
       "com.typesafe.play" %% "play-json" % "2.6.7",
       "org.scalactic" %% "scalactic" % "3.0.1",
       "org.scalaz" %% "scalaz-core" % "7.2.15",
+      "com.github.julien-truffaut" %%  "monocle-core"  % monocleVersion,
+      "com.github.julien-truffaut" %%  "monocle-macro" % monocleVersion,
+      "com.github.julien-truffaut" %%  "monocle-law"   % monocleVersion % "test",
 
       "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
       "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
       "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
       "org.scalatest" %% "scalatest" % "3.0.1" % Test
-    )
+    ),
+    addCompilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full)
   )

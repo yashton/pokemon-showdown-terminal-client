@@ -57,7 +57,7 @@ sealed trait State {
 }
 
 case class ChatState(chat: Seq[ChatMessage], users: Seq[String]) extends State
-case class BattleState(chat: Seq[ChatMessage], users: Seq[String], battle: Seq[BattleMessage]) extends State
+case class BattleState(chat: Seq[ChatMessage], users: Seq[String], battle: GameState) extends State
 case class GlobalState(chat: Seq[ChatMessage], users: Seq[String], global: Seq[GlobalMessage]) extends State
 
 case class StateUpdate(name: String, title: Option[String], state: State)
