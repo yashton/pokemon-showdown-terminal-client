@@ -13,11 +13,12 @@ import science.snelgrove.showdown.protocol._
 /**
   * Manages rendering of game state
   */
-class ScreenRender(val screen: TerminalScreen) extends Actor {
+class ScreenRender(val screen: TerminalScreen, val outgoing: ActorRef) extends Actor {
   val log = Logging(context.system, this)
   val userSize = 20
   var rooms: LinkedHashMap[String, StateUpdate] = new LinkedHashMap()
   var inputText: String = ""
+  // Tempted to push this to the input parser or elsewhere
   var activeRoom: String = "global"
 
   override def preStart(): Unit = {
@@ -71,9 +72,9 @@ class ScreenRender(val screen: TerminalScreen) extends Actor {
       // on line length
       val prefixLen = sx - Math.min(timestr.map(_.size + 1).getOrElse(0) + user.size + 1, sx)
 
-      val first = msg.take(prefixLen)
-      val rest = msg.drop(prefixLen).grouped(sx)
-      Left((timestr, user, first)) ::  (rest.map(Right.apply _)).toList
+      val first = msg.take(prefixLen - 1)
+      val rest = msg.drop(prefixLen - 1).grouped(sx)
+      Left((timestr, user, first)) :: (rest.map(Right.apply _)).toList
   }
 
 
@@ -153,6 +154,10 @@ class ScreenRender(val screen: TerminalScreen) extends Actor {
       inputText = text
       renderInput()
       screen.refresh()
+    case t: TextCommand =>
+      if (outgoing == null)
+        log.error("Outgoing actor is null")
+      outgoing ! TargetedCommand(activeRoom, t)
     case RoomSwitch(i) =>
       if (i < rooms.size) {
         activeRoom = rooms.keys.toIndexedSeq.apply(i)

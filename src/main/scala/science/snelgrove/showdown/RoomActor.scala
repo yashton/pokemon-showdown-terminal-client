@@ -2,15 +2,16 @@ package science.snelgrove.showdown
 
 import akka.actor.{ Actor, ActorRef, ActorSystem, Cancellable, Stash, Props }
 import akka.event.Logging
-import scala.collection.mutable.{ Buffer, ListBuffer, SortedSet, TreeSet }
+import scala.collection.mutable
 import science.snelgrove.showdown.protocol._
 
 /**
   * Manages the initialization of the room based on type, then
   * routing the state of the room over its lifetime.
   */
-class RoomActor(val name: String, val output: ActorRef) extends Actor with Stash {
+class RoomActor(val name: String) extends Actor with Stash {
   val log = Logging(context.system, this)
+  val subscribers: mutable.Set[ActorRef] = mutable.HashSet()
 
   def receive = {
     case RoomInit(BattleType) =>
@@ -27,7 +28,7 @@ class RoomActor(val name: String, val output: ActorRef) extends Actor with Stash
       context.become(base(context.actorOf(Props[GlobalRoom], s"$name-subproc")))
     case RoomDeinit =>
       log.info(s"Leaving room $name")
-      output ! LeaveRoom(name)
+      for { sub <- subscribers } sub ! LeaveRoom(name)
       context.stop(self)
     case _ => stash()
   }
@@ -35,18 +36,27 @@ class RoomActor(val name: String, val output: ActorRef) extends Actor with Stash
   var title: Option[String] = None
   var current: Option[State] = None
   def base(sub: ActorRef): PartialFunction[Any, Unit] = {
+    case Subscribe(ref) =>
+      subscribers += ref
+      current.foreach { s =>
+        ref ! StateUpdate(name, title, s)
+      }
     case RoomTitle(t) =>
       title = Some(t)
       current.foreach { s =>
-        output ! StateUpdate(name, title, s)
+        for { sub <- subscribers } sub ! StateUpdate(name, title, s)
       }
     case RoomDeinit =>
       log.info(s"Leaving room $name")
-      output ! LeaveRoom(name)
+      for { sub <- subscribers } sub ! LeaveRoom(name)
       context.stop(self)
     case s: State =>
       current = Some(s)
-      output ! StateUpdate(name, title, s)
+      for { sub <- subscribers } sub ! StateUpdate(name, title, s)
+    case PokeState =>
+      current.foreach { s =>
+        for { sub <- subscribers } sub ! StateUpdate(name, title, s)
+      }
     case msg => sub ! msg
   }
 }
@@ -59,6 +69,6 @@ sealed trait State {
 case class ChatState(chat: Seq[ChatMessage], users: Seq[String]) extends State
 case class BattleState(chat: Seq[ChatMessage], users: Seq[String], battle: GameState) extends State
 case class GlobalState(chat: Seq[ChatMessage], users: Seq[String], global: Seq[GlobalMessage]) extends State
-
+case object PokeState
 case class StateUpdate(name: String, title: Option[String], state: State)
 case class LeaveRoom(name: String)

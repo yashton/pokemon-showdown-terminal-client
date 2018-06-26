@@ -35,13 +35,7 @@ object Client extends App {
 
   val url = "wss://sim2.psim.us/showdown/809/yp5rljjy/websocket"
 
-  lazy val screenRender = system.actorOf(
-    Props(classOf[ScreenRender], new TerminalScreen(term)), "console-renderer")
-
-  lazy val inputParser = system.actorOf(
-    Props(classOf[InputParser], outputActor, screenRender), "input-parser")
-
-  lazy val roomRouter = system.actorOf(Props(classOf[RoomRouter], screenRender), "room-router")
+  lazy val roomRouter = system.actorOf(Props[RoomRouter], "room-router")
 
   lazy val incoming =
     Flow[Message]
@@ -75,8 +69,6 @@ object Client extends App {
   val (upgradeResponse, outputActor) =
     Http().singleWebSocketRequest(WebSocketRequest(url), flow)
 
-  Keyboard.graph(term, inputParser, log).run()
-
   val connected = upgradeResponse.map { upgrade =>
     if (upgrade.response.status == StatusCodes.SwitchingProtocols) {
       Done
@@ -85,7 +77,20 @@ object Client extends App {
     }
   }
 
-  connected.onComplete(f => log.info(s"Connected ${f.toString()}"))
+  connected.onComplete { f =>
+    lazy val screenRender = system.actorOf(
+      Props(classOf[ScreenRender], new TerminalScreen(term), outputActor), "console-renderer")
+
+    // TODO This should be supervised by ScreenRender
+    lazy val inputParser = system.actorOf(
+      Props(classOf[InputParser], screenRender), "input-parser")
+
+    Keyboard.graph(term, inputParser).run()
+
+    roomRouter ! Subscribe(screenRender)
+
+    log.info(s"Connected ${f.toString()}")
+  }
 }
 
 object Keyboard {
@@ -96,16 +101,10 @@ object Keyboard {
     }
     KeyCharacter(char, key.isCtrlDown(), key.isAltDown(), key.isShiftDown())
   }
-  def graph(term: Terminal, inputParser: ActorRef, log: LoggingAdapter) =
+  def graph(term: Terminal, inputParser: ActorRef) =
     Source.tick(0.seconds, 100.milliseconds, 'poll)
       .flatMapConcat(_ =>
         Source.unfold('poll)(_ => Option(term.pollInput()).map('poll -> _)))
-      // .map { k =>
-        // log.debug(s"type '${k.getKeyType}' char '${k.getCharacter}'" +
-        //   " ctrl ${k.isCtrlDown} alt ${k.isAltDown} shift ${k.isShiftDown}")
-      //   k
-      // }
       .map(keystrokeConvert(_))
-      // .log("keyboard)")
       .to(Sink.actorRef(inputParser, Done))
 }

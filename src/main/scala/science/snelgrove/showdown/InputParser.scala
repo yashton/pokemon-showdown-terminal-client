@@ -8,7 +8,7 @@ import akka.event.Logging
 case class RoomSwitch(i: Int)
 case class ChatTypingUpdate(text: String)
 
-class InputParser(val tempoutput: ActorRef, val screen: ActorRef) extends Actor {
+class InputParser(val screen: ActorRef) extends Actor {
   val log = Logging(context.system, this)
 
   var buffer = new StringBuilder()
@@ -24,9 +24,9 @@ class InputParser(val tempoutput: ActorRef, val screen: ActorRef) extends Actor 
       buffer = buffer.dropRight(1)
       screen ! ChatTypingUpdate(buffer.toString())
     case x @ KeyCharacter(Right(KeyType.Enter), _, _, _) =>
-      tempoutput ! TextCommand(buffer.toString())
+      screen ! TextCommand(buffer.toString())
       buffer.clear()
-      screen ! ChatTypingUpdate(buffer.toString())
+      screen ! ChatTypingUpdate("")
     case x =>
       log.warning(x.toString)
   }
