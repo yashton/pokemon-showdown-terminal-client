@@ -1,21 +1,26 @@
 package science.snelgrove.showdown
 
-import akka.http.scaladsl.model.Uri.Query
-import akka.pattern.pipe
 import akka.actor.{ Actor, Props, Stash, ActorRef }
 import akka.event.Logging
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model.{ HttpMethod, HttpRequest, HttpResponse, Uri }
+import akka.pattern.pipe
 import akka.stream.ActorMaterializer
 import akka.util.ByteString
+import com.typesafe.config._
+import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.{ Buffer, SortedSet, TreeSet }
 import science.snelgrove.showdown.protocol._
-import scala.collection.mutable.ListBuffer
+
 /**
   * Handles the primary chat behavior of the room.
   */
 class GlobalRoom extends Actor with Stash {
   val log = Logging(context.system, this)
+  val config = ConfigFactory.load()
+  val user = config.getString("showdown.user")
+
   val chat = context.actorOf(Props[ChatBuffer], s"${self.path.name}-chat")
   val users = context.actorOf(Props[UserList], s"${self.path.name}-user")
 
@@ -35,7 +40,7 @@ class GlobalRoom extends Actor with Stash {
     case LoginChallenge(token) =>
       val uri = Uri("https://play.pokemonshowdown.com/action.php").withQuery(
         Query("act" -> "getassertion",
-        "userid" -> "clienttesting",
+        "userid" -> user,
         "challstr" -> token)
       )
       val request = HttpRequest(uri = uri)
@@ -44,7 +49,7 @@ class GlobalRoom extends Actor with Stash {
     case r: HttpResponse =>
       r.entity.dataBytes.runFold(ByteString(""))(_ ++ _).foreach { body =>
         log.info(s"Logging in with token ${body.utf8String}")
-        output ! LoginCommand("clienttesting", body.utf8String)
+        output ! LoginCommand(user, body.utf8String)
       }
       unstashAll()
       context.become(running)

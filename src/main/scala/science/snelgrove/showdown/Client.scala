@@ -5,23 +5,21 @@ import akka.event.{ Logging, LoggingAdapter }
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.ws._
-import akka.http.scaladsl.server.Route
-import akka.stream.{ ActorMaterializer, OverflowStrategy }
 import akka.stream.impl.ActorRefSink
 import akka.stream.scaladsl._
+import akka.stream.{ ActorMaterializer, OverflowStrategy }
 import akka.util.ByteString
 import akka.{ Done, NotUsed }
-import com.googlecode.lanterna.input.{ KeyStroke, KeyType }
 import com.googlecode.lanterna.screen.{ Screen, TerminalScreen }
 import com.googlecode.lanterna.terminal.ansi.{ UnixLikeTerminal, UnixTerminal }
 import com.googlecode.lanterna.terminal.{ Terminal }
+import com.typesafe.config._
 import java.nio.charset.Charset
 import play.api.libs.json.{ JsValue, Json }
-import scala.concurrent.{Await, Future, Promise}
 import scala.concurrent.duration._
-import science.snelgrove.showdown.protocol.{ ShowdownCommand, ShowdownMessage, Target }
-
-case class KeyCharacter(key: Either[Char, KeyType], ctrl: Boolean, alt: Boolean, shift: Boolean)
+import scala.concurrent.{Await, Future, Promise}
+import scala.util.Random
+import science.snelgrove.showdown.protocol._
 
 object Client extends App {
 
@@ -30,15 +28,49 @@ object Client extends App {
   import system.dispatcher
   val log = Logging(system, "client")
 
-  val term = new UnixTerminal(System.in, System.out, Charset.forName("UTF-8"),
-    UnixLikeTerminal.CtrlCBehaviour.CTRL_C_KILLS_APPLICATION)
-
-  val url = "wss://sim2.psim.us/showdown/809/yp5rljjy/websocket"
+  val config = ConfigFactory.load()
+  val host = config.getString("showdown.uri")
+  val nonceA = new Random().nextInt(1000)
+  val nonceB = new Random().alphanumeric.take(8).foldLeft("")(_ + _)
+  val uri = f"$host/$nonceA%03d/$nonceB/websocket"
 
   lazy val roomRouter = system.actorOf(Props[RoomRouter], "room-router")
 
-  lazy val incoming =
-    Flow[Message]
+  val term = new UnixTerminal(System.in, System.out, Charset.forName("UTF-8"),
+    UnixLikeTerminal.CtrlCBehaviour.CTRL_C_KILLS_APPLICATION)
+  val screen = new TerminalScreen(term)
+
+  lazy val screenRender = system.actorOf(Props(classOf[ScreenRender], screen), "console-renderer")
+
+  lazy val incoming = WebsocketFlows.parseFlow.to(Sink.actorRef(roomRouter, Done))
+  lazy val outgoing = WebsocketFlows.serializeFlow
+
+  val flow: Flow[Message, Message, ActorRef] =
+    Flow.fromSinkAndSourceMat(incoming, outgoing)(Keep.right)
+
+  val (upgradeResponse, outputActor) =
+    Http().singleWebSocketRequest(WebSocketRequest(uri), flow)
+
+  val connected = upgradeResponse.map { upgrade =>
+    if (upgrade.response.status == StatusCodes.SwitchingProtocols) {
+      Done
+    } else {
+      throw new RuntimeException(s"Connection failed: ${upgrade.response.status}")
+    }
+  }
+
+  connected.onComplete { f =>
+    roomRouter ! Subscribe(screenRender)
+    roomRouter ! ClientConnected(outputActor)
+    screenRender ! ClientConnected(outputActor)
+
+    log.info(s"Connected ${f.toString()}")
+  }
+}
+
+object WebsocketFlows {
+  val parseFlow =
+      Flow[Message]
       .flatMapConcat {
         case message: TextMessage.Strict =>
           MessageParser.parseRaw(message.text) match {
@@ -55,57 +87,11 @@ object Client extends App {
               }
             }
       }
-      .to(Sink.actorRef(roomRouter, Done))
 
-  lazy val outgoing: Source[Message, ActorRef] =
+  val serializeFlow: Source[Message, ActorRef] =
     Source.actorRef[ShowdownCommand](10000, OverflowStrategy.fail)
       .map(OutgoingSerializer.serialize)
       .log("outgoing")
       .map(m => TextMessage(s"$m\n"): Message)
 
-  val flow: Flow[Message, Message, ActorRef] =
-    Flow.fromSinkAndSourceMat(incoming, outgoing)(Keep.right)
-
-  val (upgradeResponse, outputActor) =
-    Http().singleWebSocketRequest(WebSocketRequest(url), flow)
-
-  val connected = upgradeResponse.map { upgrade =>
-    if (upgrade.response.status == StatusCodes.SwitchingProtocols) {
-      Done
-    } else {
-      throw new RuntimeException(s"Connection failed: ${upgrade.response.status}")
-    }
-  }
-
-  connected.onComplete { f =>
-    lazy val screenRender = system.actorOf(
-      Props(classOf[ScreenRender], new TerminalScreen(term), outputActor), "console-renderer")
-
-    // TODO This should be supervised by ScreenRender
-    lazy val inputParser = system.actorOf(
-      Props(classOf[InputParser], screenRender), "input-parser")
-
-    Keyboard.graph(term, inputParser).run()
-
-    roomRouter ! Subscribe(screenRender)
-    roomRouter ! ClientConnected(outputActor)
-
-    log.info(s"Connected ${f.toString()}")
-  }
-}
-
-object Keyboard {
-  implicit def keystrokeConvert(key: KeyStroke): KeyCharacter = {
-    val char = key.getKeyType match {
-      case KeyType.Character => Left(key.getCharacter: Char)
-      case _ => Right(key.getKeyType)
-    }
-    KeyCharacter(char, key.isCtrlDown(), key.isAltDown(), key.isShiftDown())
-  }
-  def graph(term: Terminal, inputParser: ActorRef) =
-    Source.tick(0.seconds, 100.milliseconds, 'poll)
-      .flatMapConcat(_ =>
-        Source.unfold('poll)(_ => Option(term.pollInput()).map('poll -> _)))
-      .map(keystrokeConvert(_))
-      .to(Sink.actorRef(inputParser, Done))
 }

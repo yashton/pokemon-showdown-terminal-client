@@ -1,35 +1,88 @@
 package science.snelgrove.showdown
 
-import akka.actor.{ Actor, ActorRef, ActorSystem, Cancellable }
+import akka.Done
+import akka.actor.{ Actor, ActorRef, ActorSystem, Cancellable, Stash, Props}
 import akka.event.Logging
+import akka.stream.scaladsl._
+import akka.stream.ActorMaterializer
 import com.googlecode.lanterna.graphics.TextGraphics
 import com.googlecode.lanterna.{ TerminalPosition, TerminalSize, TextColor }
 import com.googlecode.lanterna.screen.TerminalScreen
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import scala.collection.mutable.LinkedHashMap
+import scala.concurrent.duration._
 import science.snelgrove.showdown.protocol._
 
+
 /**
-  * Manages rendering of game state
+  * Manages rendering of game state and user interactions
   */
-class ScreenRender(val screen: TerminalScreen, val outgoing: ActorRef) extends Actor {
+class ScreenRender(val screen: TerminalScreen) extends Actor with Stash {
   val log = Logging(context.system, this)
+  implicit val materializer = ActorMaterializer()
+
   val userSize = 20
   var rooms: LinkedHashMap[String, StateUpdate] = new LinkedHashMap()
   var inputText: String = ""
-  // Tempted to push this to the input parser or elsewhere
   var activeRoom: String = "global"
+
+  lazy val inputParser = context.actorOf(Props(classOf[InputParser]), "input-parser")
+
+  val inputPolling =
+    Source.tick(0.seconds, 100.milliseconds, 'poll)
+      .flatMapConcat(_ =>
+        Source.unfold('poll)(_ => Option(screen.pollInput()).map('poll -> _)))
+      .map(Keyboard.keystrokeConvert(_))
+      .to(Sink.actorRef(inputParser, Done))
 
   override def preStart(): Unit = {
     screen.startScreen()
     screen.getTerminal().addResizeListener((t, s) => if (s != null) self ! s)
     renderAll()
     screen.refresh()
+
+    inputPolling.run()
   }
 
   override def postStop(): Unit = {
     screen.stopScreen()
+  }
+
+  def receive = {
+    case ClientConnected(outgoing) =>
+      unstashAll()
+      context.become(running(outgoing))
+    case _ => stash()
+  }
+
+  def running(outgoing: ActorRef): PartialFunction[Any, Unit] = {
+    case s: TerminalSize =>
+      log.info("Resizing screen")
+      if (screen.doResizeIfNecessary() != null) {
+        screen.clear()
+        renderAll()
+        screen.refresh()
+      }
+    case s @ StateUpdate(n, _, _) =>
+      rooms.update(n, s)
+      renderAll()
+      screen.refresh()
+    case ChatTypingUpdate(text) =>
+      inputText = text
+      renderInput()
+      screen.refresh()
+    case t: TextCommand =>
+      outgoing ! TargetedCommand(activeRoom, t)
+    case RoomSwitch(i) =>
+      if (i < rooms.size) {
+        activeRoom = rooms.keys.toIndexedSeq.apply(i)
+        log.info(s"Switching rooms to ${activeRoom}")
+        screen.clear()
+        renderAll()
+        screen.refresh()
+      }
+    case msg => log.warning(msg.toString())
   }
 
   def renderAll(): Unit = {
@@ -136,36 +189,5 @@ class ScreenRender(val screen: TerminalScreen, val outgoing: ActorRef) extends A
       g.setForegroundColor(TextColor.ANSI.BLACK)
       g.putString(c - 1 - userSize, 0, s"Users ${users.size}".padTo(sx, ' '))
     }
-  }
-
-  def receive = {
-    case s: TerminalSize =>
-      log.info("Resizing screen")
-      if (screen.doResizeIfNecessary() != null) {
-        screen.clear()
-        renderAll()
-        screen.refresh()
-      }
-    case s @ StateUpdate(n, _, _) =>
-      rooms.update(n, s)
-      renderAll()
-      screen.refresh()
-    case ChatTypingUpdate(text) =>
-      inputText = text
-      renderInput()
-      screen.refresh()
-    case t: TextCommand =>
-      if (outgoing == null)
-        log.error("Outgoing actor is null")
-      outgoing ! TargetedCommand(activeRoom, t)
-    case RoomSwitch(i) =>
-      if (i < rooms.size) {
-        activeRoom = rooms.keys.toIndexedSeq.apply(i)
-        log.info(s"Switching rooms to ${activeRoom}")
-        screen.clear()
-        renderAll()
-        screen.refresh()
-      }
-    case msg => log.warning(msg.toString())
   }
 }
