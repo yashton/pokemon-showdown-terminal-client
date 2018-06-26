@@ -88,6 +88,7 @@ object Client extends App {
     Keyboard.graph(term, inputParser).run()
 
     roomRouter ! Subscribe(screenRender)
+    roomRouter ! ClientConnected(outputActor)
 
     log.info(s"Connected ${f.toString()}")
   }

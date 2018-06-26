@@ -88,8 +88,8 @@ object MessageParser {
           UserCount(count.toInt)
         case "nametaken" :: username :: reason :: Nil =>
           NameTaken(username, reason)
-        case "challstr" :: unknown :: token :: Nil =>
-          LoginToken(token)
+        case "challstr" :: rest =>
+          LoginChallenge(rest.mkString("|"))
         case "updateuser" :: username :: named :: avatar :: Nil =>
 
           UpdateUser(username, named == "1", avatar)

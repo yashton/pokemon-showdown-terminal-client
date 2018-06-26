@@ -24,10 +24,12 @@ class RoomRouter() extends Actor {
   val subscribers: mutable.Set[ActorRef] = mutable.HashSet()
 
   def receive = {
-    // TODO making the distinction from global messages and the lobby
+    case c: ClientConnected =>
+      global ! c
     case x @ Subscribe(ref) =>
       for { (_, room) <- rooms } room ! x
       subscribers += ref
+    // TODO making the distinction from global messages and the lobby
     case x @ Global(msgs) =>
       log.debug(s"global ${msgs}")
       for (msg <- msgs) global ! msg

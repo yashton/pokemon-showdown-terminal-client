@@ -40,7 +40,7 @@ case class Popup(text: String) extends GlobalMessage
 case class PrivateMessage(sender: User, receiver: User, text: String) extends GlobalMessage
 case class UserCount(count: Int) extends GlobalMessage
 case class NameTaken(username: String, reason: String) extends GlobalMessage
-case class LoginToken(token: String) extends GlobalMessage
+case class LoginChallenge(token: String) extends GlobalMessage
 case class UpdateUser(username: String, named: Boolean, avatar: String) extends GlobalMessage
 case class Format(name: String, random: Boolean, searchOnly: Boolean, challengeOnly: Boolean)
 case class Formats(format: Map[String, Seq[Format]]) extends GlobalMessage
