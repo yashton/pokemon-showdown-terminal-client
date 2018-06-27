@@ -20,6 +20,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, Future, Promise}
 import scala.util.Random
 import science.snelgrove.showdown.protocol._
+import science.snelgrove.showdown.ui._
 
 object Client extends App {
 
@@ -40,7 +41,7 @@ object Client extends App {
     UnixLikeTerminal.CtrlCBehaviour.CTRL_C_KILLS_APPLICATION)
   val screen = new TerminalScreen(term)
 
-  lazy val screenRender = system.actorOf(Props(classOf[ScreenRender], screen), "console-renderer")
+  lazy val userInterface = system.actorOf(Props(classOf[UserInterface], screen), "console-renderer")
 
   lazy val incoming = WebsocketFlows.parseFlow.to(Sink.actorRef(roomRouter, Done))
   lazy val outgoing = WebsocketFlows.serializeFlow
@@ -60,9 +61,9 @@ object Client extends App {
   }
 
   connected.onComplete { f =>
-    roomRouter ! Subscribe(screenRender)
+    roomRouter ! Subscribe(userInterface)
     roomRouter ! ClientConnected(outputActor)
-    screenRender ! ClientConnected(outputActor)
+    userInterface ! ClientConnected(outputActor)
 
     log.info(s"Connected ${f.toString()}")
   }

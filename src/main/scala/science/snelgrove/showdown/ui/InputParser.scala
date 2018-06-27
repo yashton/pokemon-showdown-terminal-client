@@ -1,4 +1,4 @@
-package science.snelgrove.showdown
+package science.snelgrove.showdown.ui
 
 import akka.actor.{ Actor, ActorRef, ActorSystem, Cancellable }
 import com.googlecode.lanterna.input.{ KeyStroke, KeyType }
