@@ -71,6 +71,10 @@ class UserInterface(val screen: TerminalScreen) extends Actor with Stash {
       screen.refresh()
     case t: TextCommand =>
       outgoing ! TargetedCommand(activeRoom, t)
+    case LeaveRoom(room) =>
+      rooms -= room
+      if (room == activeRoom)
+        activeRoom = "global"
     case RoomSwitch(i) =>
       if (i < rooms.size) {
         activeRoom = rooms.keys.toIndexedSeq.apply(i)

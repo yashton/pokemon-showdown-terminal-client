@@ -7,8 +7,6 @@ import monocle.function._
 import monocle.macros.GenLens
 import science.snelgrove.showdown.protocol._
 
-case object StatePoke
-
 class BattleProcessor extends Actor with Stash {
   val log = Logging(context.system, this)
   var state = GameState.defaults
@@ -41,9 +39,9 @@ class BattleProcessor extends Actor with Stash {
 
   def previewUpdates: PartialFunction[Any, GameState => GameState] = {
     case PlayerConnect(PlayerOne, u, _) =>
-      (teamOne composeLens player).set(u.name)
+      (teamOne composeLens player).set(u)
     case PlayerConnect(PlayerTwo, u, _) =>
-      (teamOne composeLens player).set(u.name)
+      (teamOne composeLens player).set(u)
     case BattleGameType(t) =>
       (config composeLens gameType).set(t)
     case BattleGeneration(gen) =>
@@ -56,7 +54,7 @@ class BattleProcessor extends Actor with Stash {
       (config composeLens tier).set(t)
     case PreviewPokemon(p, d, item) =>
       val pokemon = PokemonState(d.species, d.forme, None,
-        d.gender, d.shiny, d.level, Some(item),
+        d.gender, d.shiny, d.level, Some("item").filter(_ => item),
         PercentStatus(100, None), Map(), Map(), Map())
       val side = p match { case PlayerOne => teamOne; case PlayerTwo => teamTwo }
         (side composeLens team).modify(_ :+ pokemon)
@@ -124,7 +122,7 @@ class BattleProcessor extends Actor with Stash {
       // update active
     case Drag(pokemon, details, status) => ???
       // update active
-    case DetailsChange(pokemon, details, status) => ???
+    case DetailsChange(pokemon, details) => ???
     case FormeChange(pokemon, species, status) => ???
     case Replace(pokemon, details, status) => ???
     case Swap(pokemon, position) => ???
@@ -132,7 +130,7 @@ class BattleProcessor extends Actor with Stash {
     case Cant(pokemon, reason, move) => ???
     case Faint(pokemon) => ???
 
-    case Failed(pokemon, action) => ???
+    case Failed(pokemon, action, details) => ???
     case Damage(pokemon, status) => ???
       // Update status
     case Heal(pokemon, status) => ???
@@ -162,11 +160,9 @@ class BattleProcessor extends Actor with Stash {
       // update ability
     case Transform(pokemon, species) => ???
       // update species
-    case MegaEvolve(pokemon, stone) => ???
+    case MegaEvolve(pokemon, species, stone) => ???
       // update species
       // update item
-    case EndEffect(pokemon, effect) => ???
-      // not sure, no start effect?
     case SetBoost(pokemon, stat, amount, details) => ???
     //update boosts
     case Zpower(pokemon) =>

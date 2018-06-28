@@ -39,17 +39,20 @@ object MessageParser {
   def parseMessage(message: String): ShowdownMessage = {
 
     if (!message.startsWith("|")) {
-      Log(message)
+      if (message.size == 0)
+        Empty
+      else
+        Log(message)
     } else {
       val tokenized = message.tail.split('|').toList
       tokenized match {
-        case "" :: msg :: Nil =>
-          Log(msg)
         case Nil => Empty
         case "" :: Nil => Empty
         // Room messages
-        case chat(_) :: user :: msg :: Nil =>
-          Chat(parseUser(user), msg, None)
+        case "" :: msg :: Nil =>
+          Log(msg)
+        case chat(_) :: user :: rest =>
+          Chat(parseUser(user), rest.mkString("|"), None)
         case chatTs(_) :: timestamp :: user :: msg :: Nil =>
           Chat(parseUser(user), msg, Some(Instant.ofEpochSecond(timestamp.toInt)))
         case join(_) :: user :: Nil =>
@@ -72,7 +75,7 @@ object MessageParser {
           DynamicHtmlMessageUpdate(name, body)
         case ":" :: timestamp :: Nil =>
           Timestamp(Instant.ofEpochSecond(timestamp.toInt))
-        case "battle" :: room :: playerOne :: playerTwo :: Nil =>
+        case battle(_) :: room :: playerOne :: playerTwo :: Nil => // No instances in my sniffed examples.
           BattleStart(room, parseUser(playerOne), parseUser(playerTwo))
         case "deinit" :: Nil => // Undocumented
           RoomDeinit
@@ -104,21 +107,23 @@ object MessageParser {
 
         // Battle messages
         case "player" :: player :: username :: avatar :: Nil =>
-          PlayerConnect(parsePlayer(player), parseUser(username), avatar)
+          PlayerConnect(parsePlayer(player), username, avatar)
         case "gametype" :: game :: Nil =>
           BattleGameType(parseGameType(game))
         case "gen" :: gen :: Nil =>
           BattleGeneration(gen.toInt)
         case "tier" :: tier :: Nil =>
           Tier(tier)
-        case "rated" :: Nil =>
-          BattleRated
+        case "rated" :: league :: Nil =>
+          BattleRated(league)
         case "rule" :: clause :: Nil =>
           Rule(clause)
         case "clearpoke" :: Nil =>
           ClearPreview
-        case "poke" :: player :: details :: item :: Nil =>
-          PreviewPokemon(parsePlayer(player), DetailsParser.parse(details), item)
+        case "poke" :: player :: details :: "item" :: Nil =>
+          PreviewPokemon(parsePlayer(player), DetailsParser.parse(details), true)
+        case "poke" :: player :: details :: Nil =>
+          PreviewPokemon(parsePlayer(player), DetailsParser.parse(details), false)
         case "teampreview" :: Nil =>
           TeamPreview
         case "start" :: Nil =>
@@ -133,8 +138,8 @@ object MessageParser {
           BattleTimer(false, msg)
         case "turn" :: count :: Nil =>
           Turn(count.toInt)
-        case "win" :: user :: Nil =>
-          Win(parseUser(user))
+        case "win" :: username :: Nil =>
+          Win(username)
         case "tie" :: Nil =>
           Tie
         case "teamsize" :: player :: size :: Nil => // Undocumented
@@ -142,15 +147,15 @@ object MessageParser {
         case "upkeep" :: Nil => Upkeep // Undocumented
 
         // Battle Actions
-        // TODO get the edge cases
-        case "move" :: pokemon :: move :: rest =>
-          Move(PokemonParser.parse(pokemon), move, None, true)
+        case "move" :: pokemon :: move :: target :: rest =>
+          val hit = !rest.exists(_ == "[miss]")
+          Move(PokemonParser.parse(pokemon), move, PokemonParser.parse(target), hit)
         case "switch" :: pokemon :: details :: status :: Nil =>
           Switch(PokemonParser.parse(pokemon), DetailsParser.parse(details), StatusParser.parse(status))
         case "drag" :: pokemon :: details :: status :: Nil =>
           Drag(PokemonParser.parse(pokemon), DetailsParser.parse(details), StatusParser.parse(status))
-        case "detailschange" :: pokemon :: details :: status :: Nil =>
-          DetailsChange(PokemonParser.parse(pokemon), DetailsParser.parse(details), StatusParser.parse(status))
+        case "detailschange" :: pokemon :: details :: Nil =>
+          DetailsChange(PokemonParser.parse(pokemon), DetailsParser.parse(details))
         case "replace" :: pokemon :: details :: status :: Nil =>
           Replace(PokemonParser.parse(pokemon), DetailsParser.parse(details), StatusParser.parse(status))
         case "swap" :: pokemon :: position :: Nil =>
@@ -163,15 +168,20 @@ object MessageParser {
           Faint(PokemonParser.parse(pokemon))
 
         // Battle Minor Actions
-        case "-failed" :: pokemon :: action :: Nil =>
-          Failed(PokemonParser.parse(pokemon), action)
+        case "-formechange" :: pokemon :: species :: status :: Nil =>
+          FormeChange(PokemonParser.parse(pokemon), species, StatusParser.parse(status))
+        case "-fail" :: pokemon :: action :: Nil =>
+          Failed(PokemonParser.parse(pokemon), action, None)
+        // Feel like this should be two separate messages
+        case "-fail" :: pokemon :: "unboost" :: stat :: Nil =>
+          Failed(PokemonParser.parse(pokemon), "unboost", Some(stat))
         case "-damage" :: pokemon :: status :: rest => // TODO misc messages from rest
           Damage(PokemonParser.parse(pokemon), StatusParser.parse(status))
         case "-heal" :: pokemon :: status :: rest => // TODO misc messages from rest
           Heal(PokemonParser.parse(pokemon), StatusParser.parse(status))
         case "-status" :: pokemon :: effect :: Nil =>
           Status(PokemonParser.parse(pokemon), StatusParser.parseEffect(effect))
-        case "-cure" :: pokemon :: effect :: Nil =>
+        case "-curestatus" :: pokemon :: effect :: Nil =>
           Cure(PokemonParser.parse(pokemon), StatusParser.parseEffect(effect))
         case "-cureteam" :: pokemon :: Nil =>
           CureTeam(PokemonParser.parse(pokemon))
@@ -189,21 +199,17 @@ object MessageParser {
           SetBoost(PokemonParser.parse(pokemon), parseStat(stat), amount.toInt, Some(details))
         case "-clearnegativeboost" :: pokemon :: rest => // Undocumented
           ClearNegativeBoost(PokemonParser.parse(pokemon))
-        case "-weather" :: weather :: rest => // TODO misc details from rest
-          Weather(weather, false)
-        case "seed" :: Nil => // Undocumented, leech seed?
+        case "-weather" :: weather :: rest =>
+          Weather(weather, rest.exists(_ == "[upkeep]"))
+        case "seed" :: Nil => // Undocumented, appears before `rule`?
           Seed
-        case "-fieldconditionstart" :: condition :: Nil =>
+        case "-fieldstart" :: condition :: rest =>
           FieldConditionStart(condition)
-        case "-fieldconditionstop" :: condition :: Nil =>
+        case "-fieldend" :: condition :: Nil =>
           FieldConditionStop(condition)
-        case "-sideconditionstart" :: side :: condition :: Nil =>
+        case "-sidestart" :: side :: condition :: rest =>
           SideConditionStart(parsePlayer(side), condition)
-        case "-sidestart" :: side :: condition :: Nil => // Undocumented
-          SideConditionStart(parsePlayer(side), condition)
-        case "-sideconditionstop" :: side :: condition :: Nil =>
-          SideConditionStop(parsePlayer(side), condition)
-        case "-sidestop" :: side :: condition :: Nil => // Undocumented
+        case "-sideend" :: side :: condition :: rest =>
           SideConditionStop(parsePlayer(side), condition)
         case "-crit" :: pokemon :: Nil =>
           Crit(PokemonParser.parse(pokemon))
@@ -215,16 +221,18 @@ object MessageParser {
           Immune(PokemonParser.parse(pokemon))
         case "-item" :: pokemon :: item :: Nil =>
           Item(PokemonParser.parse(pokemon), item)
-        case "-enditem" :: pokemon :: item :: Nil =>
+        case "-enditem" :: pokemon :: item :: rest =>
           EndItem(PokemonParser.parse(pokemon), item)
-        case "-ability" :: pokemon :: ability :: Nil =>
+        case "-ability" :: pokemon :: ability :: rest =>
           Ability(PokemonParser.parse(pokemon), ability)
         case "-endability" :: pokemon :: Nil =>
           EndAbility(PokemonParser.parse(pokemon))
         case "-transform" :: pokemon :: species :: Nil =>
           Transform(PokemonParser.parse(pokemon), species)
-        case "-megaevolve" :: pokemon :: stone :: Nil =>
-          MegaEvolve(PokemonParser.parse(pokemon), stone)
+        case "-mega" :: pokemon :: species :: stone :: Nil =>
+          MegaEvolve(PokemonParser.parse(pokemon), species, stone)
+        case "-megaevolve" :: pokemon :: species :: stone :: Nil =>
+          MegaEvolve(PokemonParser.parse(pokemon), species, stone)
         case "-activateeffect" :: effect :: Nil =>
           ActivateEffect(effect)
         case "-activate" :: pokemon :: status :: Nil =>  // Undocumented
@@ -237,8 +245,6 @@ object MessageParser {
           TripleCenter
         case "-message" :: msg :: Nil =>
           MiscMessage(msg)
-        case "-endeffect" :: pokemon :: effect :: Nil => // Undocumented
-          EndEffect(PokemonParser.parse(pokemon), effect)
         case "-zpower" :: pokemon :: Nil => // Undocumented
           Zpower(PokemonParser.parse(pokemon))
         case _ =>
@@ -276,6 +282,9 @@ object GeneralParser {
     case "spa" => SpA
     case "spd" => SpD
     case "spe" => Spe
+    case "hp" => HP
+    case "evasion" => Eva
+    case "accuracy" => Acc
   }
 }
 
@@ -295,30 +304,28 @@ object PokemonParser {
 }
 
 object DetailsParser {
-  val speciesExtract = "^([^-]+)(-([.*]))?$".r
-  val shinyToken = "^, ?shiny".r
-  val levelToken = "^, ?L([0-9]+)$".r
-  val maleToken = "^, ?M".r
-  val femaleToken = "^, ?F".r
+  val speciesExtract = "^([^-]+)-(.+)$".r
+  val levelToken = "^L([0-9]+)$".r
+
   def parse(details : String) : PokemonDetails = {
     val species :: tokens = details.split(", ?").toList
     val shiny = tokens.exists(_ match {
-      case shinyToken() => true
+      case "shiny" => true
       case _ => false
     })
     val gender = tokens.collectFirst {
-      case maleToken() => Male
-      case femaleToken() => Female
+      case "M" => Male
+      case "F" => Female
     }.getOrElse(Genderless)
     val level = tokens.collectFirst {
       case levelToken(level) => level.toInt
     }.getOrElse(100)
 
     species match {
-      case speciesExtract(s, _, forme) =>
-        PokemonDetails(species, Option(forme), shiny, gender, level)
+      case speciesExtract(s, forme) =>
+        PokemonDetails(s, Some(forme), shiny, gender, level)
       case s: String =>
-        PokemonDetails(s, None, false, Male, 100)
+        PokemonDetails(s, None, shiny, gender, level)
     }
   }
 }
@@ -342,5 +349,7 @@ object StatusParser {
       else FaintedStatus
   }
 
-  def parseEffect(effect: String) : StatusEffect = StatusEffect(effect)
+  def parseEffect(effect: String) : StatusEffect = effect match {
+    case "tox" => BadlyPoisoned
+  }
 }

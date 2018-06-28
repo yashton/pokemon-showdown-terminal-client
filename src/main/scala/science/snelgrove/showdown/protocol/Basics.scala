@@ -5,7 +5,7 @@ case object ChatType extends RoomType
 case object GlobalType extends RoomType
 case object BattleType extends RoomType
 
-case class User(name: String, rank: Option[Char])
+case class User(name: String, rank: Option[Char] = None)
 
 sealed trait Player
 case object PlayerOne extends Player
@@ -23,16 +23,15 @@ case object Female extends Gender
 case object Genderless extends Gender
 case object Male extends Gender
 
-case class PokemonDetails(species: String, forme: Option[String],
-  shiny: Boolean, gender: Gender, level: Int)
+case class PokemonDetails(species: String, forme: Option[String] = None,
+  shiny: Boolean = false, gender: Gender = Genderless, level: Int = 100)
 
-case class StatusEffect(description: String)
-// sealed trait StatusEffect
-// case object Unaffected extends StatusEffect
-// case object Poisoned extends StatusEffect
-// case object BadlyPoisoned extends StatusEffect
-// case object Paralyzed extends StatusEffect
-// case object Sleep extends StatusEffect
+sealed trait StatusEffect
+case object Unaffected extends StatusEffect
+case object Poisoned extends StatusEffect
+case object BadlyPoisoned extends StatusEffect
+case object Paralyzed extends StatusEffect
+case object Sleep extends StatusEffect
 
 sealed trait PokemonStatus
 case class HpStatus(hpCurrent: Int, hpMax: Int, status: Option[StatusEffect]) extends PokemonStatus

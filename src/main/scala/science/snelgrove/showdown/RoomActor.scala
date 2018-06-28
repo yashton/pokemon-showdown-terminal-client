@@ -53,7 +53,7 @@ class RoomActor(val name: String) extends Actor with Stash {
     case s: State =>
       current = Some(s)
       for { sub <- subscribers } sub ! StateUpdate(name, title, s)
-    case PokeState =>
+    case StatePoke =>
       current.foreach { s =>
         for { sub <- subscribers } sub ! StateUpdate(name, title, s)
       }
@@ -69,6 +69,6 @@ sealed trait State {
 case class ChatState(chat: Seq[ChatMessage], users: Seq[String]) extends State
 case class BattleState(chat: Seq[ChatMessage], users: Seq[String], battle: GameState) extends State
 case class GlobalState(chat: Seq[ChatMessage], users: Seq[String], global: Seq[GlobalMessage]) extends State
-case object PokeState
+case object StatePoke
 case class StateUpdate(name: String, title: Option[String], state: State)
 case class LeaveRoom(name: String)
