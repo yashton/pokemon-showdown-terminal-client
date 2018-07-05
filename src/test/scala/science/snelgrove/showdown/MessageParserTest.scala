@@ -1,8 +1,10 @@
 package science.snelgrove.showdown
 
 import java.time.Instant
+import play.api.libs.json.Json
 import org.scalatest.Matchers
 import org.scalatest.FunSpec
+import scala.io.Source
 import science.snelgrove.showdown.protocol._
 import science.snelgrove.showdown.protocol.{ PokemonId => PID, PlayerOne => P1, PlayerTwo => P2 }
 
@@ -69,9 +71,10 @@ class MessageParserTest extends FunSpec with Matchers {
     }
     it("should parse some global messages") {
       parses(
-        "|challstr|4|8d0b48ada" -> LoginChallenge("4|8d0b48ada")
-        // todo UserCount NameTaken UpdateUser Formats
-        // UpdateSearch UpdateChallenges QueryResponse Seed UndocumentedStart
+        "|challstr|4|8d0b48ada" -> LoginChallenge("4|8d0b48ada"),
+        "|seed" -> Seed,
+        "|usercount|42" -> UserCount(42)
+        // TODO NameTaken UpdateUser Formats UpdateSearch UpdateChallenges QueryResponse UndocumentedStart
       )
     }
   }
@@ -109,7 +112,24 @@ class MessageParserTest extends FunSpec with Matchers {
         "|win|Pangoro" -> Win("Pangoro")
       )
     }
-    it("should parse a request") (pending)
+    it("should parse a request") {
+      import RequestParser._
+      val request = Json.parse(Source.fromResource("example_request").toArray.map(_.toByte))
+      val battle = request.as[BattleRequest]
+      import battle._
+      active.get.head.moves.head should be
+      (RequestMove("Volt Switch", "voltswitch", 32, 32, "normal", false))
+
+      side.name should be ("clienttesting2")
+      side.id should be (PlayerTwo)
+      val pokemon = side.pokemon.head
+      pokemon.ident should be (PID(P2, None, "Tapu Koko"))
+      pokemon.details should be (PokemonDetails("Tapu Koko", level = 75))
+      pokemon.condition should be (HpStatus(90, 229, None))
+      pokemon.active should be (true)
+      pokemon.moves should be (Seq("voltswitch", "wildcharge", "dazzlinggleam", "naturesmadness"))
+      pokemon.stats should be (Map(Atk -> 216, Def -> 171, SpA -> 186, SpD -> 156, Spe -> 239))
+    }
     it("should parse a pokemon details.") {
       val cases = Map(
         "Ratata" -> PokemonDetails("Ratata"),
@@ -243,6 +263,7 @@ class MessageParserTest extends FunSpec with Matchers {
       }
       it ("should parse damage") {
         parses(
+          // TODO parse source/target, other additional chunks
           "|-damage|p1a: Delibird|118/209 tox|[from] psn" ->
             Damage(PID(P1, Some("a"), "Delibird"),
               HpStatus(118, 209, Some(BadlyPoisoned))),

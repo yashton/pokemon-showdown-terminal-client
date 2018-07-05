@@ -3,8 +3,8 @@ package science.snelgrove.showdown
 import org.scalatest.Matchers
 import org.scalatest.FunSpec
 import science.snelgrove.showdown.protocol._
-
 import scala.io.Source
+
 class ExampleMessageParserTest extends FunSpec with Matchers {
   describe("Parsing a bunch of example messages") {
     it("should produce no UnknownMessage parse.") {

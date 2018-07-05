@@ -7,6 +7,7 @@ import java.time.Instant
 
 object MessageParser {
   import GeneralParser._
+  import RequestParser._
 
   private val obj = "^o$".r
   private val arr = "^a(.*)$".r
@@ -129,7 +130,7 @@ object MessageParser {
         case "start" :: Nil =>
           BattleStart
         case "request" :: json :: Nil =>
-          Request(Some(Json.parse(json)))
+          Request(Some(Json.parse(json).as[BattleRequest]))
         case "request" :: Nil =>
           Request(None)
         case "inactive" :: msg :: Nil =>

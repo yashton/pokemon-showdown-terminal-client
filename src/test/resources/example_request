@@ -1,0 +1,185 @@
+{
+  "active": [
+    {
+      "moves": [
+        {
+          "move": "Volt Switch",
+          "id": "voltswitch",
+          "pp": 32,
+          "maxpp": 32,
+          "target": "normal",
+          "disabled": false
+        },
+        {
+          "move": "Wild Charge",
+          "id": "wildcharge",
+          "pp": 24,
+          "maxpp": 24,
+          "target": "normal",
+          "disabled": false
+        },
+        {
+          "move": "Dazzling Gleam",
+          "id": "dazzlinggleam",
+          "pp": 16,
+          "maxpp": 16,
+          "target": "allAdjacentFoes",
+          "disabled": false
+        },
+        {
+          "move": "Nature's Madness",
+          "id": "naturesmadness",
+          "pp": 14,
+          "maxpp": 16,
+          "target": "normal",
+          "disabled": false
+        }
+      ]
+    }
+  ],
+  "side": {
+    "name": "clienttesting2",
+    "id": "p2",
+    "pokemon": [
+      {
+        "ident": "p2: Tapu Koko",
+        "details": "Tapu Koko, L75",
+        "condition": "90/229",
+        "active": true,
+        "stats": {
+          "atk": 216,
+          "def": 171,
+          "spa": 186,
+          "spd": 156,
+          "spe": 239
+        },
+        "moves": [
+          "voltswitch",
+          "wildcharge",
+          "dazzlinggleam",
+          "naturesmadness"
+        ],
+        "baseAbility": "electricsurge",
+        "item": "expertbelt",
+        "pokeball": "pokeball",
+        "ability": "electricsurge"
+      },
+      {
+        "ident": "p2: Jumpluff",
+        "details": "Jumpluff, L83, M",
+        "condition": "259/259",
+        "active": false,
+        "stats": {
+          "atk": 139,
+          "def": 164,
+          "spa": 139,
+          "spd": 205,
+          "spe": 230
+        },
+        "moves": [
+          "seedbomb",
+          "encore",
+          "substitute",
+          "toxic"
+        ],
+        "baseAbility": "infiltrator",
+        "item": "leftovers",
+        "pokeball": "pokeball",
+        "ability": "infiltrator"
+      },
+      {
+        "ident": "p2: Lumineon",
+        "details": "Lumineon, L83, F",
+        "condition": "250/250",
+        "active": false,
+        "stats": {
+          "atk": 162,
+          "def": 174,
+          "spa": 162,
+          "spd": 190,
+          "spe": 199
+        },
+        "moves": [
+          "toxic",
+          "scald",
+          "uturn",
+          "defog"
+        ],
+        "baseAbility": "stormdrain",
+        "item": "leftovers",
+        "pokeball": "pokeball",
+        "ability": "stormdrain"
+      },
+      {
+        "ident": "p2: Guzzlord",
+        "details": "Guzzlord, L81",
+        "condition": "494/494",
+        "active": false,
+        "stats": {
+          "atk": 210,
+          "def": 132,
+          "spa": 204,
+          "spd": 132,
+          "spe": 116
+        },
+        "moves": [
+          "knockoff",
+          "fireblast",
+          "hammerarm",
+          "dracometeor"
+        ],
+        "baseAbility": "beastboost",
+        "item": "lifeorb",
+        "pokeball": "pokeball",
+        "ability": "beastboost"
+      },
+      {
+        "ident": "p2: Snorlax",
+        "details": "Snorlax, L79, F",
+        "condition": "382/382",
+        "active": false,
+        "stats": {
+          "atk": 219,
+          "def": 148,
+          "spa": 148,
+          "spd": 219,
+          "spe": 93
+        },
+        "moves": [
+          "curse",
+          "rest",
+          "sleeptalk",
+          "return"
+        ],
+        "baseAbility": "thickfat",
+        "item": "leftovers",
+        "pokeball": "pokeball",
+        "ability": "thickfat"
+      },
+      {
+        "ident": "p2: Sceptile",
+        "details": "Sceptile, L77, M",
+        "condition": "234/234",
+        "active": false,
+        "stats": {
+          "atk": 175,
+          "def": 145,
+          "spa": 206,
+          "spd": 175,
+          "spe": 229
+        },
+        "moves": [
+          "substitute",
+          "swordsdance",
+          "outrage",
+          "earthquake"
+        ],
+        "baseAbility": "unburden",
+        "item": "sceptilite",
+        "pokeball": "pokeball",
+        "ability": "unburden"
+      }
+    ]
+  },
+  "rqid": 7
+}

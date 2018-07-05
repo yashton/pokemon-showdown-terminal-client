@@ -1,6 +1,7 @@
 package science.snelgrove.showdown.protocol
 import java.time.Instant
 import play.api.libs.json.JsValue
+import science.snelgrove.showdown.BattleRequest
 
 sealed trait Target {
   def msgs: Seq[ShowdownMessage]
@@ -61,7 +62,7 @@ case object TeamPreview extends BattleMessage
 case object Seed extends BattleMessage
 case class PreviewPokemon(player: Player, details: PokemonDetails, item: Boolean) extends BattleMessage
 case object ClearPreview extends BattleMessage
-case class Request(body: Option[JsValue]) extends BattleMessage
+case class Request(body: Option[BattleRequest]) extends BattleMessage
 case class BattleTimer(active: Boolean, message: String) extends BattleMessage
 case class Turn(number: Int) extends BattleMessage
 case class TeamSize(player: Player, size: Int) extends BattleMessage // Not Documented
